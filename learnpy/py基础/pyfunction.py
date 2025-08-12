@@ -136,3 +136,4 @@ def person_info(name, age, city="Unknown", **kwargs):
     return info
 info = person_info("Alice", 30, city="New York", job="Engineer")
 print("Person info with default city:", info)
+# 输出: Person info with default city: {'name': 'Alice', 'age': 30, 'city': 'New York', 'job': 'Engineer'}
