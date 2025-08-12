@@ -3,12 +3,14 @@
 ## 1.函数定义与调用
 ## 2.函数参数
 ## 3.返回值
-## 4.作用域
-## 5.匿名函数
-## 6.高阶函数
-## 7.装饰器与闭包
-## 8.函数糖
-## 9.递归函数
+## 4.函数嵌套
+## 5.作用域
+## 6.匿名函数
+## 7.内置函数
+## 8.拆包
+## 9.递归函数与闭包
+## 10.装饰器
+## 11.函数糖
 
 # 1.函数定义与调用
 # 函数是 Python 中的基本代码组织单元
@@ -73,13 +75,18 @@ def outer_function(x):
 add_five = outer_function(5)
 print("Add five:", add_five(10))  # 输出: Add five: 15
 
+# 2.返回值
 # 函数可以有返回值 使用 return 语句返回结果 碰到return时函数结束
 # 函数可以返回多个值 返回元组 
 def min_max(numbers):
     return min(numbers), max(numbers)#这时返回的是一个元组
 min_val, max_val = min_max([1, 2, 3, 4, 5])
 print("Min:", min_val, "Max:", max_val)
-
+# 函数可以返回多个值 返回列表
+def min_max(numbers):
+    return [min(numbers), max(numbers)]
+min_val, max_val = min_max([1, 2, 3, 4, 5])
+print("Min:", min_val, "Max:", max_val)
 
 # 函数可以作为参数传递
 def apply_function(func, value):
@@ -97,7 +104,7 @@ print("Double 5:", double(5))  # 输出: Double 5: 10
 print("Triple 5:", triple(5))  # 输出: Triple 5: 15
 
 
-# 2.函数参数
+# 3.函数参数
 # 函数参数可以分为位置参数、默认参数、可变参数和关键字参数
 
 # 位置参数是最常见的参数类型，按顺序传递，又叫必需参数
@@ -121,7 +128,7 @@ print("Concatenated string:", result)
 
 # 关键字参数是允许传递任意数量的键值对参数
 # 
-def person_info(name, age, **kwargs):   #**kwargs：
+def person_info(name, age, **kwargs):   #**kwargs：将实参所有的关键字参数接收，放在一个字典中
     info = {"name": name, "age": age}
     info.update(kwargs)
     return info
@@ -137,3 +144,135 @@ def person_info(name, age, city="Unknown", **kwargs):
 info = person_info("Alice", 30, city="New York", job="Engineer")
 print("Person info with default city:", info)
 # 输出: Person info with default city: {'name': 'Alice', 'age': 30, 'city': 'New York', 'job': 'Engineer'}
+
+# 4.函数嵌套
+# 嵌套定义：函数可以嵌套定义，允许在一个函数内部定义另一个函数
+def outer_function(x):
+    def inner_function(y):
+        return x + y
+    return inner_function#注意这里的缩进
+
+add_five = outer_function(5)
+print("Add five:", add_five(10))  # 输出: Add five: 15
+# 输出: Add five: 15
+# 嵌套调用：函数可以嵌套调用，允许在一个函数内部调用另一个函数
+
+# 嵌套调用示例：在一个函数内部调用另一个函数
+def square(x): 
+    return x * x
+
+def sum_of_squares(a, b):
+    return square(a) + square(b)
+
+result = sum_of_squares(3, 4)
+print("Sum of squares:", result)  # 输出: Sum of squares: 25
+
+# 5.作用域
+# 作用域是 Python 中的一个重要概念，它决定了变量的可见性和生命周期
+# 作用域可以分为全局作用域和局部作用域
+# 全局作用域：全局作用域中的变量可以在整个程序中访问
+# 局部作用域：局部作用域中的变量只能在函数内部访问
+
+#全局变量：在函数外部定义的变量，可以在整个程序中访问
+x = 10
+def my_function1():
+    print(x)
+my_function()
+print(x)
+
+#局部变量：在函数内部定义的变量，只能在函数内部访问 
+def my_function2():
+    x = 20
+    print(x)
+my_function2()
+print(x)#这里x的值没有改变
+
+#global关键字：在函数内部定义的变量，可以在函数外部访问
+def my_function3():
+    global x   #global关键字用于声明变量是全局变量 注意语法：global 变量名（可以同时声明多个变量）
+    x = 20
+    print(x)
+my_function3()
+print(x)#这里x的值改变了    
+
+#nonlocal关键字：在函数内部定义的变量，可以在函数内部访问 
+# 注意：nonlocal关键字只能用于嵌套函数中，不能用于全局作用域
+# 其作用只改变嵌套函数中上一层变量的值，不会改变全局变量的值
+def outer_function():
+    x = 10
+    def inner_function():
+        nonlocal x #nonlocal关键字用于声明变量是嵌套函数中上一层变量 注意语法：nonlocal 变量名（可以同时声明多个变量）
+        x = 20
+        print(x)
+    inner_function()
+    print(x)
+outer_function()
+print(x)#这里x的值是全局变量 没有改变
+# 输出: 20 20 10
+
+# 6.匿名函数
+# 匿名函数是一种没有名字的函数，通常用于简单的函数
+# 匿名函数使用 lambda 关键字定义，语法：lambda 参数: 表达式
+# 匿名函数只能包含一个表达式，不能包含多个表达式
+# 匿名函数没有名字，不能被其他函数调用
+# 匿名函数可以作为参数传递给其他函数
+
+# 基本语法：函数名 = lambda 参数: 表达式
+# 示例：
+add = lambda x, y: x + y
+print(add(1, 2))
+# 输出: 3
+
+# 匿名函数的参数可以有多个，也可以没有参数
+# 可以是可变参数（*args），关键字参数（**kwargs），默认参数（要放在非默认参数后）
+# 示例：
+add = lambda *args, **kwargs: sum(args) + sum(kwargs.values())
+print(add(1, 2, 3, 4, 5, a=6, b=7))
+# 输出: 33
+# 示例：
+add = lambda x, y=1: x + y
+print(add(1)) 
+# 输出: 2
+
+# lambda结合if判断
+add = lambda x, y: x + y if x > y else x - y #其实就是三目运算符
+print(add(1, 2))
+# 输出: -1  
+
+
+# 7.内置函数
+# 内置函数是 Python 中预定义的函数，可以直接使用，不需要导入模块
+# 内置函数可以分为以下几类：
+# 数学函数：abs绝对值、pow幂、round四舍五入、max最大值、min最小值、sum求和、len长度、sorted排序、reversed反转、zip合并、map映射、filter过滤、reduce归约
+# 字符串函数：str字符串、len长度、upper大写、lower小写、capitalize首字母大写、title每个单词首字母大写、strip去除空格、split分割、
+#            join合并、replace替换、find查找、count计数、startswith是否以指定字符串开头、endswith是否以指定字符串结尾
+# 列表函数：list列表、append添加、extend扩展、insert插入、remove删除、pop弹出、clear清空、sort排序、reverse反转
+# 字典函数：dict字典、keys键、values值、items键值对、get获取、pop弹出、popitem随机弹出、clear清空、update更新
+# 集合函数：set集合、add添加、remove删除、discard删除、clear清空、union并集、intersection交集、difference差集、symmetric_difference对称差集
+# 文件函数：open打开、close关闭、read读取、write写入、seek移动、tell当前位置、flush刷新、truncate截断
+# 时间函数：time时间、datetime日期时间、timedelta时间差、sleep睡眠、strftime格式化、strptime解析
+
+#查看所有的内置函数
+import builtins
+print(dir(builtins))#dir()函数可以查看所有的内置函数
+
+
+# 8.拆包
+# 拆包是 Python 中的一种操作，它可以将一个序列（如列表、元组、字典）拆分成多个变量
+# 拆包的语法是：变量1, 变量2, ... = 序列
+# 拆包的语法是：变量1, 变量2, ... = 序列
+
+a, b, c = [1, 2, 3]
+print(a, b, c)
+# 输出: 1 2 3
+
+a, b, c = (1, 2, 3)
+print(a, b, c)
+# 输出: 1 2 3
+
+a,*b = [1, 2, 3, 4, 5]
+print(a, b)
+
+# 9.装饰器与闭包
+
+# 函数作为返回值：闭包
