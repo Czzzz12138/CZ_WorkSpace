@@ -8,9 +8,7 @@
 ## 6.匿名函数
 ## 7.内置函数
 ## 8.拆包
-## 9.递归函数与闭包
-## 10.装饰器
-## 11.函数糖
+## 9.闭包与装饰器及函数糖
 
 # 1.函数定义与调用
 # 函数是 Python 中的基本代码组织单元
@@ -177,7 +175,7 @@ print("Sum of squares:", result)  # 输出: Sum of squares: 25
 x = 10
 def my_function1():
     print(x)
-my_function()
+my_function1()
 print(x)
 
 #局部变量：在函数内部定义的变量，只能在函数内部访问 
@@ -273,7 +271,105 @@ print(a, b, c)
 a,*b = [1, 2, 3, 4, 5]
 print(a, b)
 
-# 9.装饰器与闭包
+# 9.闭包与装饰器及函数糖
 
 # 函数作为返回值：闭包
-#   
+# 闭包：闭包是函数内部定义的函数，可以访问函数内部的变量
+# 闭包的语法是：def outer_function():
+#                def inner_function():
+#                    print(x)
+#                return inner_function   #返回的是inner_function的引用
+#                inner_function = outer_function()
+#                inner_function()       #调用的是inner_function
+# 闭包的语法是：def outer_function():
+def outer_function():
+    x = 10
+    def inner_function():
+        print(x)
+    return inner_function
+
+outer_function()()    #这里返回的是inner_function的引用
+# 相当于:
+# inner_function = outer_function()
+# inner_function()    #这里调用的是inner_function
+# 输出: 10
+
+
+# 装饰器：装饰器是函数，可以装饰其他函数
+# 装饰器是函数，可以装饰其他函数，装饰器可以添加新的功能
+# 函数糖是装饰器的语法糖，可以简化装饰器的使用
+
+# 装饰器的语法是：def decorator(func):
+#                def wrapper(*args, **kwargs):
+#                    print("Before function")
+#                    func(*args, **kwargs)
+#                    print("After function")
+#                return wrapper
+# 原理： 
+#        # 装饰器函数接收一个函数作为参数，返回一个函数
+#        # 装饰器函数内部定义一个函数，这个函数内部调用被装饰的函数
+#        # 装饰器函数返回这个内部函数
+#        # 被装饰的函数被装饰器函数装饰后，被装饰的函数被内部函数替换，内部函数可以添加新的功能
+#        # 在上面这个例子中，被装饰的函数是func，装饰器函数是decorator，内部函数是wrapper
+#例子
+def decorator(func):
+    def wrapper(*args, **kwargs):
+        print("Before function")
+        func(*args, **kwargs)
+        print("After function")
+    return wrapper
+# 使用装饰器
+@decorator##函数糖
+def func():
+    print("Hello, world!")
+func()
+# 输出: Before function Hello, world! After function
+
+#使用装饰器 相当于decorator(func)()
+decorator(func)()
+# 输出: Before function Hello, world! After function
+
+
+# 一个稍微复杂一点的装饰器例子：带参数的装饰器，并统计被装饰函数的调用次数
+
+def count_calls(prefix="调用"):
+    def decorator(func):
+        count = 0
+        def wrapper(*args, **kwargs):
+            nonlocal count
+            count += 1
+            print(f"{prefix}第{count}次: {func.__name__}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@count_calls("执行")  #函数糖，表示用count_calls装饰器装饰say_hello函数xx
+def say_hello(name):
+    print(f"你好, {name}!")
+
+@count_calls("运行")
+def add(a, b):
+    print(f"{a} + {b} = {a + b}")
+
+say_hello("小明")    #相当于count_calls("执行")(say_hello)("小明")，
+                    #先执行count_calls("执行")，返回decorator函数，再执行decorator(say_hello)，返回wrapper函数，再执行wrapper("小明")
+say_hello("小红")
+add(3, 5)               #相当于count_calls("运行")(add)(3, 5)，
+                    #先执行count_calls("运行")，返回decorator函数，再执行decorator(add)，返回wrapper函数，再执行wrapper(3, 5)
+add(10, 20)
+add(1, 2)
+
+# 输出示例:
+# 执行第1次: say_hello
+# 你好, 小明!
+# 执行第2次: say_hello
+# 你好, 小红!
+# 运行第1次: add
+# 3 + 5 = 8
+# 运行第2次: add
+# 10 + 20 = 30
+# 运行第3次: add
+# 1 + 2 = 3
+
+
+
