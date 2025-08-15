@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>html基础上</title>
+</head>
+
+<body>
+
+    <!-- 我是注释 -->
+    <!-- 我也是注释 -->
+    <h1 id="toptitle">html基础(上)</h1>
+    <h1>1. 标题</h1>
+    <h3>语法：</h3>
+    &lt;h1&gt;标题1&lt;/h1&gt;
+    <h3>效果：</h3>
+    <h1>hello html！</h1>
+    <h2>hello html！</h2>
+    <h3>hello html！</h3>
+    <h4>hello html！</h4>
+    <h5>hello html！</h5>
+    <h6>hello html！</h6>
+    <br>
+
+    <h1>2. 段落</h1>
+    <h3>语法：</h3>
+    &lt;p&gt;段落内容&lt;/p&gt;   用于分段<br>
+    &lt;br&gt;或者&lt;br/&gt; 用于换行<br>
+    <h3>效果：</h3>
+    <br/>我是第一段我是第一段我是第一段我是第一段我是第一段我是第一段我是第一段我是第一段我是第一段我是第一段我是第一段
+    </p>
+    <p>你好 我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段我是第二段
+    </p>
+    <br>
+    <p>你好 <br> 我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段我是第三段</p>
+    <br>
+    <h3>其他常用标签：</h3>
+    &lt;strong&gt;加粗文本&lt;/strong&gt; <br>
+    &lt;b&gt;加粗文本&lt;/b&gt; 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>用于加粗</b><br><br>
+
+    &lt;em&gt;倾斜文本&lt;/em&gt;<br>
+    &lt;i&gt;倾斜文本&lt;/i&gt;<i> 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>用于倾斜</i><br><br>
+
+    &lt;del&gt;删除线文本&lt;/del&gt;<br>
+    &lt;s&gt;删除线文本&lt;/s&gt; 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <del>用于删除线</del><br><br>
+
+    &lt;ins&gt;下划线文本&lt;/ins&gt;<br>
+    &lt;u&gt;下划线文本&lt;/u&gt; 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <ins>用于下划线</ins><br><br>
+    
+    &lt;mark&gt;高亮文本&lt;/mark&gt;  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <mark>用于高亮</mark><br><br>
+
+    &lt;div&gt;大盒子分区&lt;/div&gt;
+    <div>我没是用来分区布局的一人独占一行的div 大盒子</div>  <br>
+
+    &lt;span&gt;小盒子分区1&lt;/span&gt; 
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &lt;span&gt;小盒子分区2&lt;/span&gt;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    span&gt;小盒子分区3&lt;/span&gt; <br>
+
+    <span>我是span</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>一行好几个 是小盒子</span>
+    <br>
+    <br>
+
+    <h1>3. 图片</h1>
+    <h3>语法：</h3>
+    &lt;img src="图片地址" alt="替换文本" title="图片标题" width="100" height="100" border="1"&gt;  <br>
+    注意图片地址可以是相对路径或者绝对路径，尽量使用相对路径<br>
+    替换文本是指当图片无法显示时，浏览器会显示的文本内容<br>
+    图片标题是指当用户将鼠标悬停在图片上时，浏览器会显示的文本内容
+    
+    <br><br>
+    <h3>效果：</h3>
+    <img src="图片1.png" alt="替换文本" title="这是一张照片" width="100" height="" border="10">
+    <img src="images/01.png" alt="替换文本" title="这也是一张照片" width="100" height="200" border="5">
+    <img src="../外image1.png" alt="替换文本" title="这也是一张照片" width="" height="100" border="5">
+    <img src="/html_css_js/html/html01/images/01.png" alt="替换文本" title="这是照片" width="100" height="150" border="1">
+    <!-- 绝对路径少使用，尽量用相对路径 -->
+    <img src="图片2.png" alt="替换文本" title="这是一张显示不出来的照片" width="100" height="150" border="1">
+    <br>
+    <br>
+    <h1>4. 超链接</h1>
+    <h3>语法：</h3>
+    &lt;a href="链接地址" target="_blank"&gt;链接文本或者照片img&lt;/a&gt; <br>
+    target="_blank"表示在新窗口打开链接
+    <h3>效果：</h3>
+    (1).一个超链接（外部链接）
+    <a href="http://www.baidu.com" target="_blank">百度</a>
+    <br>
+    (2).这也是一个超链接（内部链接）
+    <a href="../myfirst.html" target="_blank">我的第一个网页</a>
+    <br>
+    (3).这也是一个超链接（空链接）
+    <a href="#" target="_blank">空链接（待做）</a>
+    <br>
+    (4).这也是一个超链接（下载链接 下载zip或者运行exe等）
+    <a href="资源/图片1.zip" target="_blank">下载</a>
+    <br>
+    (5).还可以做网页元素链接&nbsp;&nbsp;&nbsp;&nbsp; 链接到图片音频视频 
+    &nbsp;&nbsp;&nbsp;&nbsp;或者用照片img等元素做链接等等
+    <br>
+    <a href="images/01.png" target="_blank">查看图片</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="http://www.baidu.com" target="_blank"><img src="图片1.png" alt="替换文本" title="这是一张照片" width="100" height=""
+            border="10"></a>
+    <br>
+    <br>
+    (6).还有锚点链接 <a href="#toptitle" target="_blank">返回顶部</a>
+    <br>
+    锚点链接的地址是以#开头的链接，指向页面中的某个元素，需要在目标元素上设置相应的id属性。
+    <br><br>
+
+    <h1>5. 特殊字符与注释</h1>
+    <h3>特殊字符：</h3>
+    <h3>语法：</h3>
+          "&amp;lt;"表示"&lt;"<br>
+          "&amp;gt;"表示"&gt;"<br>
+          "&amp;amp;表示"&amp;"<br>
+          "&amp;quot;表示"&quot;"<br>
+          "&amp;apos;表示"&apos;"<br>
+          "&amp;nbsp;"表示"&nbsp;"(空格)
+    <h3>效果：</h3>
+    &lt;&nbsp;&nbsp;&nbsp;&nbsp;
+    &amp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    &gt;&nbsp;&nbsp;&nbsp;&nbsp;
+    &quot;&nbsp;&nbsp;&nbsp;&nbsp;
+    &apos;&nbsp;&nbsp;&nbsp;&nbsp;
+    <br>
+    <h3>注释：</h3>
+&lt;!-- 注释内容 --&gt;
+    <br>
+    <br>
+
+
+
+</body>
+
+</html>

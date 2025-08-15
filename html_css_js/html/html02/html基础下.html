@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>html基础下</title>
+</head>
+<body>
+    <h1>html基础(下)</h1>
+    <h1>1. 表格</h1>
+    <b>表格是用来显示数据的一种常用方式</b><br>
+    <h2>表格的基本结构和属性</h2>
+    <h3>语法：</h3>
+ 
+<pre>    
+    &lt;table border="1" align="center" cellpadding="10" cellspacing="0" width="500" height="200"&gt;           
+                                table表示表格，常用属性：
+                                border：边框宽度
+                                align：表格对齐方式(left/center/right)
+                                cellpadding：单元格内边距
+                                cellspacing：单元格间距
+                    
+        &lt;thead&gt;          thead表示表格头部区域
+            &lt;tr&gt;               tr表示表格行
+                &lt;th&gt;姓名&lt;/th&gt;       th表示表头 是一种特殊的单元格
+                &lt;th&gt;年龄&lt;/th&gt;              要放在行tr里面
+                &lt;th&gt;城市&lt;/th&gt;                   内容会居中加粗
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;           tbody表示表格主体区域
+            &lt;tr&gt;                      tr表示表格行 
+                &lt;td&gt;张三&lt;/td&gt;              td表示表格单元格
+                &lt;td&gt;25&lt;/td&gt;                    要写在行tr里面
+                &lt;td&gt;北京&lt;/td&gt;                     表示这一行有几个单元格
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;李四&lt;/td&gt;
+                &lt;td&gt;30&lt;/td&gt;
+                &lt;td&gt;上海&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;王五&lt;/td&gt;
+                &lt;td&gt;28&lt;/td&gt;
+                &lt;td&gt;广州&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+
+</pre>
+
+    <!-- pre标签：表示预格式化文本，文本会保留空格和换行-->
+
+<h3>效果：</h3><br>
+    <table border="1" align="center" cellpadding="10" cellspacing="0" width="500" height="200">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>城市</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>张三</td>
+                <td>25</td>
+                <td>北京</td>
+            </tr>
+            <tr>
+                <td>李四</td>
+                <td>30</td>
+                <td>上海</td>
+            </tr>
+            <tr>
+                <td>王五</td>
+                <td>28</td>
+                <td>广州</td>
+            </tr>
+        </tbody>
+    </table>
+    
+</body>
+
+<br>
+
+
+<h2>合并表格单元格</h2>
+<h3>语法：</h3>
+rowspan：合并行 <br>
+&lt;td rowspan="2"&gt;内容&lt;/td&gt; <br>
+colspan：合并列 <br>
+&lt;td colspan="2"&gt;内容&lt;/td&gt;<br>
+注意合并之后删除多余的单元格即可
+
+
+<h3>效果：</h3>
+    <table border="1" align="center" cellpadding="10" cellspacing="0" width="500" height="250">
+        <thead>
+            <tr>
+                <th colspan="5">个人简历</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>姓名</td>
+                <td>张三</td>
+                <td>性别</td>
+                <td>男</td>
+
+                <td rowspan="4" >
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;照片
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+
+
+            </tr>
+            <tr>
+                <td>年龄</td>
+                <td>25</td>
+                <td>城市</td>
+                <td>北京</td>
+
+
+            </tr>
+            <tr>
+                <td>民族</td>
+                <td>汉族</td>
+                <td>电话</td>
+                <td>12345678901</td>
+   
+
+            </tr>
+            <tr>
+                <td>政治面貌</td>
+                <td>群众</td>
+                <td>学历</td>
+                <td>本科</td>
+            </tr>
+        </tbody>
+    </table>
+<br>
+
+
+<h1>2. 列表</h1>
+<b>列表是用来显示一组相关信息的常用方式 常用来布局</b><br>
+
+<h2>无序列表</h2>
+<h3>语法：</h3>
+&lt;ul&gt; <br>
+    &lt;li&gt;项目1&lt;/li&gt; <br>
+    &lt;li&gt;项目2&lt;/li&gt; <br>
+    &lt;li&gt;项目3&lt;/li&gt; <br>
+&lt;/ul&gt; <br>
+
+<h3>效果：</h3>
+<ul>
+    <li>项目1</li>
+    <li>项目2</li>
+    <li>项目3</li>
+</ul>
+<br>
+<h2>有序列表</h2>
+<h3>语法：</h3>
+&lt;ol&gt; <br>
+    &lt;li&gt;项目1&lt;/li&gt; <br>
+    &lt;li&gt;项目2&lt;/li&gt; <br>
+    &lt;li&gt;项目3&lt;/li&gt; <br>
+&lt;/ol&gt; <br>
+
+<h3>效果：</h3>
+<ol>
+    <li>项目1</li>
+    <li>项目2</li>
+    <li>项目3</li>
+</ol>
+
+</html>
+<br>
+<h2>自定义列表样式</h2>
+<h3>语法：</h3>
+&lt;dl&gt; <br>
+    &lt;dt&gt;项目1&lt;/dt&gt; <br>
+    &lt;dd&gt;项目1的详细信息1&lt;/dd&gt; <br>
+    &lt;dd&gt;项目1的详细信息2&lt;/dd&gt; <br>
+&lt;/dl&gt; <br>
+
+<h3>效果：</h3>
+<dl>
+    <dt>项目1</dt>
+    <dd>项目1的详细信息1</dd>
+    <dd>项目1的详细信息2</dd>
+</dl>
+<br>
+
+
+<h1>3. 表单</h1>
+<b>表单是用来收集用户输入信息的常用方式</b><br>
+<h3>语法：</h3>
+&lt;form action="提交地址" method="提交方式get/post" name="form1"&gt; <br>
+    <ul>
+    <li>&lt;input type="text" name="username" placeholder="请输入用户名 最长为6位" maxlength="6"&gt; &lt;br&gt;</li>
+    <li>&lt;input type="password" name="password" placeholder="请输入密码"&gt; &lt;br&gt;</li>
+    <li>&lt;input type="button" name="button" value="点击我"&gt; &lt;br&gt;</li>
+    <li>&lt;input type="reset" value="重置"&gt; &lt;br&gt;</li>
+    <li>&lt;input type="file" name="file" value="上传文件"&gt; &lt;br&gt;</li>
+    <li>&lt;input type="hidden" name="hidden" value="隐藏域"&gt; &lt;br&gt;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐藏域用户看不见，但是可以提交数据</li>
+    <li>
+        &lt;input type="checkbox" name="hobby" value="篮球"&gt;篮球 &lt;br&gt;
+        &lt;input type="checkbox" name="hobby" value="足球"&gt;足球 &lt;br&gt;
+        &lt;input type="checkbox" name="hobby" value="羽毛球"&gt;羽毛球 &lt;br&gt;
+    </li>
+    <li>
+        &lt;input type="radio" name="gender" value="男"&gt;男 &lt;br&gt;
+        &lt;input type="radio" name="gender" value="女"&gt;女 &lt;br&gt;
+    </li>(单选按钮和复选按钮可以配置checked属性来设置默认选中状态)<br>
+        如&lt;input type="radio" name="rule" value="同意" checked="checked"&gt;我默认同意以上规则
+    <li>&lt;select name="city"&gt; &lt;br&gt;
+        &lt;option value="北京"&gt;北京&lt;/option&gt; &lt;br&gt;<br>
+        &lt;option value="上海"&gt;上海&lt;/option&gt; &lt;br&gt;<br>
+        &lt;option value="广州"&gt;广州&lt;/option&gt; &lt;br&gt;<br>
+        &lt;option value="深圳"&gt;深圳&lt;/option&gt; &lt;br&gt;<br>
+    </li>
+    <li>&lt;input type="image" src="image.jpg" alt="提交" &gt; &lt;br&gt;<br></li>
+    <li>&lt;input type="submit" value="提交"&gt; &lt;br&gt;</li>
+   
+    <br>
+
+&lt;/form&gt; <br>
+
+<h3>效果：</h3>
+<form action="提交地址" method="get" name="form1">
+    <input type="text" name="username" placeholder="请输入用户名 最长为6位" maxlength="6"> <br>
+    <input type="password" name="password" placeholder="请输入密码"> <br>
+    <input type="button" name="button" value="点击我" > <br>
+    <input type="reset" value="重置"> <br>
+    <input type="file" name="file"> <br><br>
+    <input type="hidden" name="hidden" value="隐藏域">
+    (隐藏域用户看不见，但是可以提交数据)<br><br>
+    
+    <input type="checkbox" name="hobby" value="篮球">篮球 <br>
+    <input type="checkbox" name="hobby" value="足球">足球 <br>
+    <input type="checkbox" name="hobby" value="羽毛球">羽毛球 <br><br>
+    
+    <input type="radio" name="gender" value="男">男 <br>
+    <input type="radio" name="gender" value="女">女 <br><br>
+    
+    (单选按钮和复选按钮可以配置checked属性来设置默认选中状态)<br>
+    如<input type="radio" name="rule" value="同意" checked="checked">我默认同意以上规则
+    <br><br>
+    
+    <select name="city">
+        <option value="北京">北京</option>
+        <option value="上海">上海</option>
+        <option value="广州">广州</option>
+        <option value="深圳">深圳</option>
+    </select><br>
+    
+    <input type="image" src="image.jpg" alt="提交" > <br>
+    <input type="submit" value="提交"> <br>
+</form>
+<br>
+
+
+<h2>label标签</h2>
+<b>label元素用于为表单控件提供标签</b><br>
+<h3>语法：</h3>
+&lt;label for="username"&gt;用户名：&lt;/label&gt;<br>
+&lt;input type="text" id="username" name="username"&gt;&lt;br&gt;<br>
+&lt;label for="password"&gt;密码：&lt;/label&gt;<br>
+&lt;input type="password" id="password" name="password"&gt;&lt;br&gt;<br>
+&lt;label for="city"&gt;城市：&lt;/label&gt;<br>
+&lt;select id="city" name="city"&gt;<br>
+    &lt;option value="北京"&gt;北京&lt;/option&gt;<br>
+    &lt;option value="上海"&gt;上海&lt;/option&gt;<br>
+    &lt;option value="广州"&gt;广州&lt;/option&gt;<br>
+    &lt;option value="深圳"&gt;深圳&lt;/option&gt;<br>
+&lt;/select&gt;&lt;br&gt;<br>
+注意：label的for属性值要与对应表单控件的id属性值相同
+
+<h3>效果：</h3>
+<label for="username">用户名：</label>
+<input type="text" id="username" name="username"><br>
+<label for="password">密码：</label>
+<input type="password" id="password" name="password"><br>
+<label for="city">城市：</label>
+<select id="city" name="city">
+    <option value="北京">北京</option>
+    <option value="上海">上海</option>
+    <option value="广州">广州</option>
+    <option value="深圳">深圳</option>
+</select><br>
+
+<h1>4. 表单控件（元素）</h1>
+
+<h2>input</h2>
+<b>input元素用于创建各种类型的输入控件 用法前文已介绍</b>
+
+<h2>select</h2>
+<b>select元素用于创建下拉选择框 其用法前文也出现过</b>
+<h3>语法：</h3>
+&lt;select name="city"&gt; &lt;br&gt;
+    &lt;option value="北京"&gt;北京&lt;/option&gt; &lt;br&gt;<br>
+    &lt;option value="上海"&gt;上海&lt;/option&gt; &lt;br&gt;<br>
+    &lt;option value="广州"&gt;广州&lt;/option&gt; &lt;br&gt;<br>
+    &lt;option value="深圳"&gt;深圳&lt;/option&gt; &lt;br&gt;<br>
+&lt;/select&gt;&lt;br&gt;<br>
+<h3>效果：</h3>
+<select name="city">
+    <option value="北京">北京</option>
+    <option value="上海">上海</option>
+    <option value="广州">广州</option>
+    <option value="深圳">深圳</option>
+</select>
+
+<h2>textarea</h2>
+<b>textarea元素用于创建多行文本输入控件</b>
+<h3>语法：</h3>
+&lt;textarea name="content" rows="5" cols="30"&gt;&lt;/textarea&gt;
+
+<h3>效果：</h3>
+<textarea name="content" rows="5" cols="30">请输入内容</textarea>
+
+<h1>5. 学会查询</h1>
+<a href="https://www.w3school.com.cn/html/index.asp">W3School HTML教程</a>
