@@ -1,0 +1,5 @@
+com\demo\web\WeatherController.class
+com\demo\service\AmapService.class
+com\demo\AgriWeatherApplication.class
+com\demo\web\AiConsultationController.class
+com\demo\web\AmapController.class
