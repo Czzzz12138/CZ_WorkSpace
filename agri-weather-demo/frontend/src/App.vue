@@ -109,7 +109,10 @@
           <section class="card">
             <div class="card-head">
               <h2>实时气象</h2>
-              <button class="btn" @click="loadRealtime">刷新</button>
+              <div class="realtime-controls">
+                <span class="data-source" v-if="amap.city">📍 {{ amap.city }}</span>
+                <button class="btn" @click="loadRealtime">同步</button>
+              </div>
             </div>
             <div class="stats">
               <div class="stat">
@@ -698,8 +701,38 @@ function selectFrequentQuestion(question: string) {
 }
 
 async function loadRealtime() {
-  const { data } = await axios.get('/api/weather/realtime');
-  realtime.value = data;
+  // 如果有地图模块的位置信息，使用高德地图的天气数据
+  if (amap.value.adcode) {
+    try {
+      const wRes = await axios.get('/api/amap/weather', { params: { adcode: amap.value.adcode } });
+      weather.value = wRes.data as any;
+      applyWeatherToRealtime();
+    } catch (error) {
+      console.error('获取天气数据失败:', error);
+      // 如果获取高德天气失败，fallback到模拟数据
+      const { data } = await axios.get('/api/weather/realtime');
+      realtime.value = data;
+    }
+  } else {
+    // 如果没有位置信息，先获取位置，然后获取天气数据
+    try {
+      await loadAmap();
+      if (amap.value.adcode) {
+        const wRes = await axios.get('/api/amap/weather', { params: { adcode: amap.value.adcode } });
+        weather.value = wRes.data as any;
+        applyWeatherToRealtime();
+      } else {
+        // 如果还是没有位置信息，使用模拟数据
+        const { data } = await axios.get('/api/weather/realtime');
+        realtime.value = data;
+      }
+    } catch (error) {
+      console.error('获取位置或天气数据失败:', error);
+      // fallback到模拟数据
+      const { data } = await axios.get('/api/weather/realtime');
+      realtime.value = data;
+    }
+  }
 }
 async function loadAlerts() {
   const { data } = await axios.get('/api/weather/alerts');
@@ -750,6 +783,8 @@ async function loadAmap() {
       applyWeatherToRealtime();
     });
   }
+  // 初始加载完成后，同步数据到实时气象模块
+  applyWeatherToRealtime();
 }
 
 async function loadForecast() {
@@ -767,11 +802,43 @@ function saveHistory(val: string) {
 
 function applyWeatherToRealtime() {
   if (!weather.value) return;
+  
+  // 设置位置信息
   realtime.value.location = amap.value.city || amap.value.province || '未知位置';
+  
+  // 设置温度
   const t = Number((weather.value as any).temperature);
-  const h = Number((weather.value as any).humidity);
   if (!Number.isNaN(t)) realtime.value.temperature = t;
+  
+  // 设置湿度（高德返回的是百分比，需要转换为小数）
+  const h = Number((weather.value as any).humidity);
   if (!Number.isNaN(h)) realtime.value.humidity = h / 100;
+  
+  // 设置风速（如果有风力等级，转换为大概的风速）
+  if ((weather.value as any).windpower) {
+    const windpower = (weather.value as any).windpower;
+    // 简单的风力等级到风速的转换（大概值）
+    const windpowerNum = parseInt(windpower.replace(/[^0-9]/g, ''));
+    if (!isNaN(windpowerNum)) {
+      realtime.value.windSpeed = windpowerNum * 2; // 简单转换，风力等级*2作为风速
+    }
+  }
+  
+  // 设置模拟的光照值（高德API不提供光照数据，设置一个基于天气的模拟值）
+  const weatherDesc = (weather.value as any).weather || '';
+  if (weatherDesc.includes('晴')) {
+    realtime.value.illumination = 800 + Math.random() * 200; // 800-1000 lux
+  } else if (weatherDesc.includes('云')) {
+    realtime.value.illumination = 400 + Math.random() * 300; // 400-700 lux
+  } else if (weatherDesc.includes('阴')) {
+    realtime.value.illumination = 200 + Math.random() * 200; // 200-400 lux
+  } else if (weatherDesc.includes('雨') || weatherDesc.includes('雪')) {
+    realtime.value.illumination = 100 + Math.random() * 150; // 100-250 lux
+  } else {
+    realtime.value.illumination = 500 + Math.random() * 300; // 默认值
+  }
+  
+  // 设置时间戳
   realtime.value.timestamp = new Date().toISOString();
 }
 
@@ -1540,6 +1607,17 @@ onMounted(() => { loadAmap(); });
   .three-cols { grid-template-columns: repeat(3, 1fr); }
   .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
   .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .realtime-controls { display: flex; align-items: center; gap: 12px; }
+  .data-source { 
+    font-size: 12px; 
+    color: #6b7280; 
+    background: #f3f4f6; 
+    padding: 4px 8px; 
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
   .btn { padding: 6px 12px; border: 1px solid #CBD5E1; border-radius: 8px; background: #f8fafc; cursor: pointer; }
   .btn:hover { background: #f1f5f9; }
   .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -1551,8 +1629,8 @@ onMounted(() => { loadAmap(); });
   .bar.blue { background: linear-gradient(90deg, #22d3ee, #0ea5e9); }
   .bar.orange { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
   .alerts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .alerts li { display: flex; gap: 10px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; }
-  .tag { display: inline-block; min-width: 54px; text-align: center; font-size: 12px; padding: 4px 8px; border-radius: 999px; color: white; }
+  .alerts li { display: flex; gap: 10px; align-items: center; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; }
+  .tag { display: inline-flex; align-items: center; justify-content: center; min-width: 54px; text-align: center; font-size: 12px; padding: 4px 8px; border-radius: 999px; color: white; font-weight: 600; }
   .tag.WARN { background: #f59e0b; }
   .tag.ERROR, .tag.ALERT { background: #ef4444; }
   .alert-body b { display: block; margin-bottom: 4px; }
