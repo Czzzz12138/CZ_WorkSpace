@@ -1,0 +1,1388 @@
+Research on a Spectral Reconstruction  
+Method with Noise Tolerance
+Yunlong Ye, Jianqi Zhang, Delian Liu*, and Yixin Yang
+School of Physics and Optoelectronic Engineering, Xidian University, Xi’an 710071, China
+(Received May 24, 2021 : revised July 18, 2021 : accepted July 26, 2021)
+As a new type of spectrometer, that based on filters with different transmittance features attracts 
+a lot of attention for its advantages such as small-size, low cost, and simple optical structure. It uses 
+post-processing algorithms to achieve target spectrum reconstruction; therefore, the performance of the 
+spectrometer is severely affected by noise. The influence of noise on the spectral reconstruction results 
+is studied in this paper, and suggestions for solving the spectral reconstruction problem under noisy con-
+ditions are given. We first list different spectral reconstruction methods, and through simulations dem-
+onstrate that these methods show unsatisfactory performance under noisy conditions. Then we propose 
+to apply the gradient projection for sparse reconstruction (GRSR) algorithm to the spectral reconstruc-
+tion method. Simulation results show that the proposed method can significantly reduce the influence 
+of noise on the spectral reconstruction process. Meanwhile, the accuracy of the spectral reconstruction 
+results is dramatically improved. Therefore, the practicality of the filter-based spectrometer will be en-
+hanced.
+Keywords : Compressive sensing, Noise tolerance, Spectrometer
+OCIS codes : (300.6190) Spectrometers; (300.6550) Spectroscopy, visible
+*Corresponding author: dlliu@xidian.edu.cn, ORCID 0000-0001-8655-8010
+Color versions of one or more of the figures in this paper are available online.
+This is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License (http://creativecommons.
+org/licenses/by-nc/4.0/) which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work 
+is properly cited.
+Copyright © 2021 Current Optics and Photonics 
+I. INTRODUCTION
+Spectrum analysis is an important technology in almost 
+all fields of science [1–4]. As an important tool to separate 
+and measure a spectrum, the spectrometer attracts more and 
+more attention with the development of spectroscopy tech-
+nology. Current spectrometers, such as the prism, grating, 
+and interferometer types, are bulky, expensive, and delicate, 
+which greatly limits their applications [5]. The mechanisms 
+of these spectrometers are shown in Fig. 1. A prism instru-
+ment uses the difference in refractive index between dif-
+ferent wavelengths of light to separate optical bands [Fig. 
+1(a)] [6]. However, an additional scanning mechanism is 
+required to obtain the spectral bands. This increases the vol-
+ume of the system, and accuracy is difficult to guarantee. A 
+grating instrument uses the diffraction of light to separate 
+optical bands [Fig. 1(b)] [7, 8]. The grating will attenuate 
+the light intensity, and is difficult to fabricate and calibrate. 
+An interferometer uses the interference of light to separate 
+optical bands [Fig. 1(c)] [9]. The structure of the interfer-
+ometer is complex, making it huge and expensive. To make 
+instruments with better performance and a wider range 
+of applications, a lot of effort has been invested to design 
+small, inexpensive and simple spectrometers [10–12].
+Recently, the seminal work of Bao and Bawendi [13] has 
+shown a new type of spectrometer, based on a set of filters 
+whose transmittance features can be varied. The mechanism 
+of this filter-based spectrometer is shown in Fig. 1(d). The 
+original light first passes through a given filter of predeter-
+mined transmittance; then the radiance of the transmitted 
+light is measured by a detector. This radiance measurement 
+needs to be repeated many times, using different filters with 
+different transmittances. It is efficient to place these filters 
+and their corresponding detectors in an array format. The 
+spectrum of the original light can be reconstructed from these 
+radiance values, using a spectral reconstruction method.
+- 562 -
+Current Optics and Photonics
+Vol. 5, No. 5, October 2021, pp. 562–575
+ISSN: 2508-7266(Print) / ISSN: 2508-7274(Online)
+DOI: https://doi.org/10.3807/COPP.2021.5.5.562
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+563
+Since filter-based spectrometers can greatly reduce size 
+and cost, many efforts have been made to propose new fil-
+ters and various spectral reconstruction methods recently.
+In the research of Bao and Bawendi [13], the filter ar-
+ray is composed of colloidal quantum dots (CQDs), and 
+the transmittance of the filter can be changed simply by 
+changing the size, shape, and composition of the CQD. The 
+research mainly solves the problem when the number of 
+filters is larger than the number of spectral bands. In such a 
+case, the reconstruction method uses the least-squares (LS) 
+linear regression algorithm. All of the major features of the 
+spectrum can be reconstructed and the spectral range can be 
+increased simply by increasing the number of filters. 
+Yang et al. [14] proposed an approach based on a single 
+compositionally engineered nanowire. By measuring the 
+photocurrent along the length of the nanowire, the spectrum 
+can be reconstructed. The study introduced an adaptive Tik-
+honov regularization algorithm to the spectral reconstruc-
+tion method, to reduce the influence of the system’s noise, 
+which can make the reconstruction more accurate.
+Wang and Yu [15] from the University of Wisconsin, 
+Madison proposed to apply a compressive sensing algo-
+rithm to the spectral reconstruction method, which can 
+solve the problem when the number of filters is less than 
+the number of spectral bands. In their research, the filter ar-
+ray is composed of different nanophotonic structures. The 
+spectrum of the source light is reconstructed by the basis 
+pursuit (BP) algorithm, and the spectral position and radi-
+ance of the original light can be recovered very well.
+When spectrometers are applied under practical condi-
+tions, many additional factors such as noise need to be con-
+sidered. Noise can be generated in every step of the spectral 
+reconstruction process [16], and it can greatly interfere with 
+the accuracy of the reconstruction. Therefore, it is worth-
+while to study denoising approaches. The spectrometers 
+we have introduced above can perform well under their 
+applicable conditions, but their reconstruction performance 
+in the face of noise is unsatisfactory. One of the important 
+factors affecting denoising is the spectral reconstruction 
+method. The reconstruction method in [13] used the LS 
+algorithm; while it can perform well under ideal condi-
+tions, it is unable to reconstruct the spectrum of the original 
+light under noise. The reconstruction method in [14] was 
+based on an adaptive Tikhonov regularization algorithm, 
+which can offset the deficiency of the LS algorithm in noise 
+processing. However, the denoising ability of this method 
+still needs to be improved. The method in [15] used the BP 
+algorithm; it was proposed to solve the problem when the 
+number of filters is less than the number of spectral bands, 
+which allows the reconstruction method to have a wider 
+operational range with fewer filters. However, the BP al-
+gorithm is not designed for recovering a signal under noisy 
+conditions, so the method based on the BP algorithm can 
+only work when noise is not a concern. 
+In this paper, we focus on denoising approaches for the 
+filter-based spectrometer. After comparing several methods 
+through simulations, we analyze the effect of noise on the 
+spectral reconstruction performance, and to improve the 
+reconstruction effect we propose a new spectral reconstruc-
+tion method. The gradient projection for sparse reconstruc-
+tion (GPSR) algorithm is used to solve the convex uncon-
+strained optimization problem; the algorithm shows good 
+accuracy, so it is used in many fields for signal reconstruc-
+tion [17, 18]. The GPSR algorithm has not been introduced 
+FIG. 1. Mechanisms of different spectrometers: (a) based on a prism, (b) based on a grating, (c) based on an interferometer, and (d) 
+based on filters with different transmittance features.
+
+
+Current Optics and Photonics, Vol. 5, No. 5, October 2021
+564
+for spectral reconstruction in such filter-based spectrome-
+ters in the literature, and we propose applying the GPSR al-
+gorithm to their spectral reconstruction method. In addition, 
+we verify the reconstruction effect of this method through 
+simulations. The results show that the spectral reconstruc-
+tion method proposed in this paper has good performance 
+in recovering the spectrum under noise coming from the 
+system, and the method can achieve good reconstruction 
+performance with fewer filters. 
+Our work can make filter-based spectrometers more 
+practical, and the main contributions of this paper are sum-
+marized as follows:
+(1) The effect of noise on the spectral reconstruction is 
+analyzed.
+(2) Different spectral reconstruction methods are ana-
+lyzed, to compare their noise tolerance.
+(3) The spectral reconstruction method based on the 
+GPSR algorithm is proposed, to improve the denoising ef-
+fect of the spectrometer.
+(4) Simulations are designed to verify the effects of the 
+denoising approaches.
+II. ANALYSIS OF THE NOISE EFFECT
+In [13], [14], and [15], it has been proved that it is pos-
+sible to realize spectral measurement by passing the source 
+light through a set of filters with different spectral response 
+characteristics, and in this section we show the effect of 
+noise on the spectral reconstruction performance.
+The spectral reconstruction process for a filter-based 
+spectrometer can be described mathematically as shown in 
+Fig. 2. In the ideal case, we consider an unknown source 
+light Φ(λ) (λ is the wavelength) passing through a two-
+dimensional filter array, where the transmittance of filter i 
+can be described as Ti(λ) (i = 1, 2, 3, ..., nF, nF is the number 
+of filters). The transmitted light through each filter can be 
+measured by the corresponding detector, and the output 
+value Li(i = 1, 2, 3, ..., nF) of the i
+th detector is in accordance 
+with Eq. (1):
+   
+ 
+
+
+
+
+i
+i
+F
+L
+T
+K
+d
+i
+n
+λ
+λ
+λ
+λ
+= Φ
+=
+
+
+.
+(1)
+In Eq. (1), K(λ) is the response function of the detector, 
+and we regard K(λ) of each detector to be the same. There-
+fore, we ignore the influence of K(λ) and assume that the 
+response function of the detector [K(λ)] at any wavelength 
+is 1 in this paper. In the actual spectral reconstruction pro-
+cess, the variables in Eq. (1) can only be in the discrete 
+form, and Eq. (1) can be discretized into a form such as
+ 
+  
+
+
+
+i
+i
+F
+L
+T
+i
+n
+λ
+λ
+λ
+=
+Φ
+=
+
+
+.
+(2)
+In Eq. (2), the wavelength λ is discretized into nλ sec-
+tions, Ti(λ) is predetermined, and Li can be measured by 
+the detector; only Φ(λ) is unknown, so the spectrum of the 
+original light can be reconstructed by finding the solution 
+of Eq. (2). Equation (2) can be regarded as a set of linear 
+equations with nλ unknowns and nF equations, and different 
+spectral reconstruction methods should be applied in dif-
+ferent cases to recover the original signal Φ(λ). In the ideal 
+case of nλ = nF, Eq. (2) is well-posed and the equations have 
+a unique solution; when nλ < nF, Eq. (2) is overdetermined 
+and has a least-squares solution; and when nλ > nF, Eq. (2) 
+is underdetermined and the solution of the linear equations 
+is uncertain.
+Equation (1) shows the spectral reconstruction process in 
+the ideal situation; when we carry out a physical experiment 
+or apply the method to an actual situation, noise must be 
+a concern. Noise is the useless information in the spectral 
+reconstruction system, and its existence greatly affects the 
+result of the spectral reconstruction [16, 19]. In a spectrom-
+eter, noise exists at every step, such as the unwanted signal 
+due to detector noise and stray light, the measurement error 
+generated during the measurement of the filter’s transmit-
+tance, and the drift of transmittance induced by temperature 
+change. Different types of noise have different effects on 
+spectral reconstruction [20]. To describe the system’s noise 
+and the modeling mismatch [21, 22], a noise δ i is added to 
+Eq. (2):
+FIG. 2. Schematic of the spectral reconstruction process.
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+565
+ 
+ 
+
+
+
+
+i
+i
+i
+i
+i
+F
+L
+L
+T
+i
+n
+λ
+δ
+λ
+λ
+δ
+′ =
++
+=
+Φ
++
+=
+
+
+, (3)
+where Li is the true value of the transmitted light radiance, 
+and L'i is the measured value of the transmitted light radi-
+ance obtained by the detector. The noise tolerance of dif-
+ferent algorithms can be different; to recover the original 
+signal Φ(λ) as accurately as possible, a signal recovery 
+algorithm with better noise tolerance should be chosen.
+According to previous research, spectral reconstruction 
+methods based on various algorithms have been applied, 
+such as the LS algorithm, the BP algorithm, or the Tik-
+honov regularization algorithm, for example. In our work, 
+we analyze the spectral reconstruction performance of these 
+methods under noise through simulated experiments. 
+We design the simulations to evaluate the effect of the 
+noise on the spectral reconstruction results, and the noise 
+tolerance of the different methods mentioned above. The 
+comparison of the performance of different spectral recon-
+struction methods shows that noise has a great influence on 
+the reconstruction. 
+The process of spectral reconstruction is simulated in 
+MATLAB. We consider the source light Φ(λ) with the 
+wavelength λ ranging from 400 to 800 nm; Φ(λ) contains 
+nλ unknowns, so the resolution is (800 − 400) / (nλ − 1) nm. 
+To simplify the simulation process, we assume that the ra-
+diance of the source light ranges from 0 to 1. As shown in 
+Figs. 3 (a) and 3(b), we design a single-spectral-peak light 
+signal and a broadband light signal.
+Then we design nF filters T = [T1(λ), T2(λ), T3(λ), ..., 
+Tnf(λ)]
+T, where a filter consists of multiple layers,and dif-
+ferent layers have staggered grating structures, such that the 
+transmittance of the filter can be easily adjusted by chang-
+ing the period of the grating. We designed 100 sets of filters 
+of different transmittance; transmittance traces for some of 
+the filters are shown in Fig. 3(c).
+To evaluate the effect of noise on the spectral reconstruc-
+tion, we compare the reconstruction results for different 
+methods, in both ideal and noisy cases. After obtaining the 
+reconstruction results based on different algorithms, we use 
+the root mean square error (RMSE) to evaluate the quality 
+of the reconstruction results:
+
+
+ 
+ 
+
+ 
+ 
+nλ
+λ
+λ
+λ
+λ
+′
+Φ
+−Φ
+′
+Φ
+Φ
+=
+.
+(4)
+RMSE is widely used to measure the deviation between 
+observations and true values. In our research we calculate 
+the RMSE for different spectral reconstruction methods 
+under the same simulation conditions and noise levels. The 
+smaller the RMSE, the closer the reconstructed signal is to 
+the original signal, which means better reconstruction per-
+formance.
+2.1. The Least-squares Linear Regression Algorithm
+The least-squares linear regression algorithm has been 
+widely used to reconstruct spectra in previous research [13, 
+23, 24]. When we reconstruct the original spectrum in the 
+ideal case, Eq. (2) can be converted to a least-squares (LS) 
+problem:
+
+
+Φ
+−
+
+ .
+(5)
+Research on the least-squares problem is quite mature. 
+The LS algorithm is not proper for an underdetermined 
+system, so the algorithm cannot solve the spectral recon-
+struction problem when the number of filters nF less than 
+the number of spectral bands nλ. Therefore, to achieve 
+higher resolution in spectral reconstruction, more filters are 
+needed, which greatly increase the volume of a filter-based 
+spectrometer.
+To evaluate the effect of system’s noise on a method 
+based on the LS algorithm, we generate random white 
+Gaussian noise Δ = (δ 1, δ 2, δ 3, ..., δ nf)
+T as the system’s noise 
+in Eq. (3). In this paper, we use S/N to describe the level 
+of noise, it is defined as the ratio of the root mean square 
+amplitude of the signal to the noise. After we obtain the 
+measurement of radiance L', the original spectrum Φ can 
+   (a)
+(b)
+      (c)
+FIG. 3. Simulation of the source light and the filters: (a) the single-spectral-peak light signal, (b) the broadband light signal, and (c) 
+the transmission fraction for some of the filters.
+
+
+Current Optics and Photonics, Vol. 5, No. 5, October 2021
+566
+be reconstructed using the LS algorithm. The reconstruc-
+tion results are shown in Figs. 4(a) and 4(b); we obtain the 
+reconstruction results for a single-spectral-peak light signal 
+and a broadband light signal respectively. The RMSE of the 
+reconstructed signal in Fig. 4(a) is 1.054 × 10
+2, while that 
+of the signal in Fig. 4(b) is 1.564 × 10
+3. The reconstruction 
+results show that the method based on the LS algorithm 
+cannot reconstruct the spectrum of the original signal from 
+noisy observations. The explanation of this phenomenon is 
+as follows:
+Although the transmittances of different filters are dif-
+ferent, there are still some correlations between them. This 
+makes the system of equations ill-conditioned, which means 
+that a very small disturbance in T and L in Eq. (2) will have 
+a huge influence on the reconstruction results. Therefore, 
+when the LS algorithm is used for spectral reconstruction, 
+the presence of noise will make the reconstruction results 
+deviate strongly from the original spectral signal.
+2.2. The BP Algorithm
+In Wang and Yu’s paper [15], they applied the BP algo-
+rithm in the spectral reconstruction method. This method 
+can use fewer filters while meeting a certain reconstruction 
+spectral resolution, which can further reduce the volume 
+of the spectrometer. In this paper, we mainly deal with the 
+case when nλ > nF.
+The compressive sensing algorithm [25–28] is an effec-
+tive way to solve the problem when nλ > nF. The method 
+of compressive sensing is shown in Fig. 5. A signal x (one-
+dimensional signal of length n) is a sparse signal when x 
+only has k nonzero coefficients (k ≪ n). When the signal x 
+is sparse or approximately sparse, we can define a measure-
+ment matrix T to project the high-dimensional signal x onto 
+the low-dimensional space, and the projection process can 
+be described as
+=
+
+.
+(6)
+The measurement y obtained in this way is a one-
+dimensional signal of length m(m < n) , and y contains all 
+of the information of the original signal x. If the signal x is 
+not sparse, then a sparsifying basis Ψ (matrix of size n by 
+n) can be found such that the signal x can be sparse or ap-
+proximately sparse in Ψ; that is,
+=
+
+
+Ψ ,
+(7)
+where θ is a sparse or approximately sparse signal. Then 
+the projection process shown in Eq. (6) can be rewritten as
+=
+=
+=
+
+
+
+,
+(8)
+where Θ = TΨ. When we get the measurement y, the sparse 
+signal θ̂  can be obtained by solving y = Θθ, and then the 
+reconstruction result x̂  can be obtained through Eq. (7).
+The spectral reconstruction process is similar to the 
+compressive sensing process, in which the unknown source 
+light Φ(λ) can be regarded as the signal x that will be 
+solved, the filter response function T is equivalent to the 
+measurement matrix T, and the radiance of the transmitted 
+light L is equivalent to the measurement y. Because of the 
+similarity between the spectral reconstruction process and 
+the compressive sensing process, the solution Φ̂  (λ) of Eq. (2) 
+can be found by using the relevant algorithm of compres-
+sive sensing in the case when nλ > nF.
+A typical compressive sensing algorithm that can be 
+used to solve the spectral reconstruction problem is the BP 
+algorithm [29], the main idea of which is to convert the 
+            (a)
+           (b)
+FIG. 4. The effect of system’s noise on the LS algorithm: (a) the reconstruction results for a single-spectral-peak light signal where 
+noise is concerned, with S/N = 1000/1 and nλ = nF = 100, and (b) the reconstruction results for a broadband light signal where noise 
+is concerned, also with S/N = 1000/1, and nλ = nF = 100.
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+567
+underdetermined linear problem into a convex optimization 
+problem:
+
+
+ 
+θ
+=
+
+
+,
+(9)
+where Θ = TΨ. The method based on the BP algorithm 
+has satisfactory performance in the noiseless case, but the 
+BP algorithm is not designed for recovering a signal when 
+noise is concerned.
+The effect of noise on the reconstruction performance 
+can be evaluated through the above simulated experiments. 
+We compare the spectral reconstruction performance in the 
+ideal case and under noise, and again select two light sourc-
+es, the single-spectral-peak light source and the broadband 
+light source. For a non-sparse signal, the sparsifying basis 
+selected is the discrete cosine transform (DCT) matrix. 
+The method based on the BP algorithm cannot work under 
+noise, so to reconstruct the spectrum from noisy observa-
+tions more accurately, a method with better noise tolerance 
+should be found.
+As shown in Figs. 6(a) and 6(c), the RMSE of the recon-
+structed signal in Fig. 6(a) is 1.83 × 10
+−3, and that in Fig. 
+6(c) is 2.43 × 10
+−3. Obviously, the reconstruction results al-
+most coincide with the original spectral signal; the method 
+based on the BP algorithm can solve the underdetermined 
+linear problem, so the method can deal with the case when 
+nλ > nF, when there is no noise. The spectral reconstruction 
+results when noise is concerned are shown in Figs. 6(b) and 
+6(d), for which the RMSE is 0.414 and 3.010 respectively. 
+From the reconstruction results, we can see that the method 
+based on the BP algorithm dose not offer satisfactory per-
+formance under noise.
+2.3. The Tikhonov Regularization Algorithm
+The spectral reconstruction method in [14] uses the 
+Tikhonov regularization algorithm. As mentioned. when 
+system’s noise exists in the spectral reconstruction process, 
+the reconstruction performance of traditional algorithms 
+without noise tolerance is greatly affected. One way to re-
+duce the influence of system’s noise is to add a regulariza-
+tion term to the quadratic minimization problem [30]. The 
+method based on the Tikhonov regularization algorithm can 
+solve the ill-posed problem in linear equations, so it has the 
+feature of noise tolerance.
+The Tikhonov regularization algorithm obtains the solu-
+tion of Eq. (3) by finding the minimum point of the regular-
+ization problem:
+
+
+
+
+
+τ
+Φ
+′−
++
+
+
+ ,
+(10)
+where τ > 0 is the regularization parameter. We use the 
+same simulations as above to evaluate the reconstruction 
+performance of the method based on the Tikhonov regular-
+ization algorithm under noise.
+As shown in Figs. 7(a) and 7(c), the RMSE of the recon-
+structed signal in Fig. 7(a) is 1.49 × 10
+−3 and that in Fig. 
+7(c) is 2.39 × 10
+−3. Therefore, when the noise is not con-
+sidered, the method based on the Tikhonov regularization 
+algorithm can reconstruct the spectrum when nλ > nF, and 
+the spectral reconstruction performance of the method is 
+nearly perfect. When noise is concerned, the spectral recon-
+struction results are shown in Figs. 7(b) and 7(d), where the 
+RMSE of the reconstructed signal in Fig. 7(b) is 5.29 × 10
+−3 
+and that in Fig. 7(d) is 2.26 × 10
+−2. 
+The spectral reconstruction results show that the method 
+FIG. 5. The method of compressive sensing.
+Θ
+
+
+Current Optics and Photonics, Vol. 5, No. 5, October 2021
+568
+based on the Tikhonov regularization algorithm can re-
+construct the spectrum under noise, but the reconstruction 
+results of the continuous broadband spectrum are poor in 
+detail, and the accuracy of the reconstruction results should 
+be further improved.
+Through the analysis of the spectral reconstruction per-
+formance of the above three algorithms, the noise tolerance 
+of the spectral reconstruction methods that are commonly 
+used at present is not enough. To increase the accuracy of 
+spectral reconstruction results, it is necessary to propose a 
+method with better noise tolerance.
+III. NEW METHOD WITH  
+BETTER NOISE TOLERANCE
+For better spectral reconstruction performance, we 
+mainly study the spectral reconstruction method with better 
+noise tolerance in this paper.
+At the same time, to reduce the size of the spectrometer, 
+the spectral reconstruction method proposed in this paper 
+should have the ability to reconstruct the spectrum of the 
+source light under the condition that the number of filters is 
+less than the number of spectral bands. The spectral signal 
+is usually sparse, or can be so under some sparsifying basis, 
+so the compressive sensing algorithm introduced above can 
+be used to solve this problem.
+        (a)
+        (b)
+         (c)
+         (d)
+FIG. 6. The effect of system’s noise on the basis pursuit (BP) algorithm. (a) The reconstruction results for a single-spectral-peak 
+light signal when noise is not concerned and nF < nλ = 1601; (b) the reconstruction results for a single-spectral-peak light signal when 
+noise is concerned, with S/N = 1000/1 and nF < nλ = 1601; (c) the results for a broadband light signal when noise is not concerned 
+and nF < nλ = 1601; and (d) the results for a broadband light signal when noise is concerned, with S/N = 1000/1 and nF < nλ = 1601.
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+569
+The BP algorithm is a typical compressive sensing algo-
+rithm; it is proposed to solve Eq. (9), so a spectral recon-
+struction method based on the BP algorithm can perfectly 
+reconstruct the target spectrum when nλ > nF, but the recon-
+struction results with this method exhibit very large devia-
+tions under noise. 
+When noise is considered as a factor that affects the re-
+construction result, we convert Eq. (3) to the L1-regularized 
+least-squares problem:
+
+
+
+
+ 
+θ
+τ
+′−
++
+
+
+ ,
+(11)
+where τ is a nonnegative real parameter. By solving Eq. 
+(11), the sparse solution can be obtained and the influence 
+of noise can be reduced as much as possible. After finding 
+the sparse solution θ̂ , the reconstruction result Φ̂ (λ) can be 
+obtained through Φ(λ) = Ψθ .
+Eq. (11) has attracted great attention for more than three 
+decades, and many signal processing problems where 
+sparseness is sought can be converted to this form. Nowa-
+days, there are several optimization algorithms to solve the 
+problem, such as the basis pursuit de-noising (BPDN) algo-
+rithm [29] and the GPSR algorithm [31].
+The GPSR algorithm can effectively solve Eq. (11), so it 
+is frequently used to reconstruct two-dimensional image in-
+formation [17, 32]. However, the algorithm has not been in-
+troduced for spectral signal reconstruction. To improve the 
+        (a)
+        (b)
+        (c)
+        (d)
+FIG. 7. The effect of system’s noise on the Tikhonov regularization algorithm. (a) The reconstruction results for a single-spectral-
+peak light signal when noise is not concerned and nF < nλ = 1601; (b) the results for a single-spectral-peak light signal when noise is 
+concerned, with S/N = 1000/1 and nF < nλ = 1601; (c) the results for a broadband light signal when noise is not concerned and nF < nλ 
+= 1601; and (d) the results for a broadband light signal when noise is concerned, with S/N = 1000/1 and nF < nλ = 1601.
+
+
+Current Optics and Photonics, Vol. 5, No. 5, October 2021
+570
+spectral reconstruction performance, we propose a spectral 
+reconstruction method based on the GPSR algorithm. The 
+method based on the GPSR algorithm is designed to use 
+fewer filters to achieve high resolution, and has the ability 
+to reconstruct the spectrum from a noisy signal. It proved to 
+be able to achieve satisfactory performance under the noise 
+level of most detectors.
+The first step of the GPSR algorithm is to split θ into its 
+positive and negative parts; that is,
+
+
+
+=
+−
+≥
+≥
+
+
+ 
+
+.
+(12)
+Then Eq. (11) is converted to the bound-constrained 
+quadratic program (BCQP) problem:
+
+
+ 
+
+
+T
+T
+z
++
+≥
+ 
+ 
+
+,
+(13)
+where z = [u, v]
+T, b = Θ
+TL', c = τl2n + [−b, b]
+T, ln = [1, 1, 1, ..., 
+1]
+T (a vector consisting of n ones), and B = [Θ
+TΘ, −Θ
+TΘ; −
+Θ
+TΘ, Θ
+TΘ]. [31] gives two ways to solve Eq. (13): basic-
+gradient projection for sparse reconstruction (GPSR-Basic), 
+and the Barzilai-Borwein projection for sparse reconstruc-
+tion (GPSR-BB). Both algorithms have the advantage of 
+good reconstruction effect, easy implementation, and a 
+large range of applications, and their processing speeds are 
+faster than those of many other algorithms [33, 34]. In this 
+paper, we use the GPSR-BB algorithm to reconstruct the 
+spectrum of the original light, with the sparsifying basis se-
+lected as the DCT matrix.
+The GPSR-BB algorithm can be easily used in MAT-
+LAB by downloading the related toolbox [31]. To improve 
+the performance of the method based on the GPSR algo-
+rithm, we should choose an appropriate value for τ in Eq. 
+(11). τ is the regularization parameter, and it can balance 
+the tradeoff between the sparsity of the solution θ̂  and re-
+sidual error; the determination of τ affects the quality of the 
+reconstruction results. In the process of spectral reconstruc-
+tion, different spectral signals have different sparsity, so it 
+is difficult to choose the regularization parameter τ. The al-
+gorithm in [35] provides a way to choose the regularization 
+parameter more effectively, and we apply it to our spectral 
+reconstruction method to achieve better results. By using 
+the algorithm, we can find and trace all solutions θ̂ (τ) as a 
+function of the regularization parameter τ. In the L1-regu-
+larized least squares problem, the regularization parameter 
+τ can have some properties [36]: As τ → 0, ǁθ      ǁ1 is the mini-
+mum among all θ that satisfy Θ
+T(Θθ  − L' ) = 0, and as τ → ∞, 
+the optimal solution tends to zero and convergence occurs 
+for a finite value of τ, where τ ≥ τmax = ǁ2Θ
+TL'ǁ∞. Thus we 
+can start the algorithm with τ = ǁ2Θ
+TL'ǁ∞, then generate all 
+solution paths τ as decreases, and the algorithm terminates 
+when τ reaches 0. The best choice for the regularization pa-
+rameter τ can be found from the solution paths.
+We still use the simulated experiments introduced in the 
+previous section to verify the reconstruction performance of 
+the spectral reconstruction method based on the GPSR al-
+gorithm. Figure 8 shows the spectral reconstruction results 
+for the single-spectral-peak and broadband light sources by 
+means of this method. The system’s noise in the simulations 
+is set to S/N = 1000/1. The results show satisfactory qual-
+ity; the RMSE of the reconstructed signal in Fig. 8(a) is 5.08 
+× 10
+−3, and that in Fig. 8(b) is 7.58 × 10
+−3. All of the major 
+features such as crest position and radiance of the original 
+signal are recovered well.
+To compare the reconstruction performance of these 
+      (a)
+        (b)
+FIG. 8. The simulation results for the spectral reconstruction method based on the GPSR algorithm. (a) The reconstruction results 
+for a single-spectral-peak light signal when noise is concerned, with S/N = 1000/1 and nF < nλ = 1601; (b) the results for a broadband 
+light signal when noise is concerned, also with S/N = 1000/1 and nF < nλ = 1601.
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+571
+methods, we add system’s noise of varying intensity to the 
+measurements. Tables 1 and 2 show the RMSE of recon-
+struction results when using different spectral reconstruc-
+tion methods, for different S/N. The reconstructed light 
+source in Table 1 is the single-spectral-peak light source 
+[Fig. 3(a)], while that in Table 2 is the broadband light 
+source [Fig. 3(b)]. From the simulations we can find that 
+the Tikhonov regularization algorithm, the BPDN algo-
+rithm, and the GPSR algorithm can have good performance 
+in recovering the signal when system’s noise is concerned, 
+and as S/N increases, the quality of the reconstruction re-
+sults improves significantly. The results show that the spec-
+tral reconstruction method based on the GPSR algorithm 
+can have better performance than that based on the BPDN 
+algorithm. For reconstruction of the single-spectral-peak 
+light source, the methods based on the GPSR and Tikhonov 
+regularization algorithms show similar performance, and 
+when reconstructing the broadband spectrum the GPSR al-
+gorithm is significantly better than the Tikhonov regulariza-
+tion algorithm. 
+To further study the noise tolerance of the method based 
+on the GPSR algorithm, we separately analyze the spectral 
+reconstruction performance under different levels of detec-
+tor noise and filter noise. We define δ Li as the noise of the i
+th 
+detector and ΔTi as the noise of the i
+th filter, ΔTi = (δ Ti1, δ Ti2, 
+δ Ti3, ..., δ Tinλ)
+T. Therefore, the spectral reconstruction process 
+can be described as
+  
+ 
+
+
+
+
+
+Ti
+L
+i
+i
+F
+i
+L
+T
+i
+n
+λ
+λ
+λ
+δ
+′ =
++
+Φ
++
+=
+Δ
+
+
+.
+(14)
+In the simulations, the noise of the i
+th filter and the de-
+tector noise are separately represented by a set of random 
+Gaussian white noise values.
+Optoelectronic detectors play an important role in a 
+spectrometer, and according to the characteristics of the de-
+tectors, their measurements must contain some amount of 
+noise [37, 38]. These noise can be divided into three main 
+categories: readout noise, dark noise, and photoelectron 
+noise. To analyze the reconstruction performance of the 
+methods, we add detector noise of varying intensity while 
+the filter noise is held at a fixed value. Tables 3 and 4 show 
+the RMSE of the reconstruction results when using differ-
+ent spectral reconstruction methods, for different levels of 
+detector noise.
+The filter noise mainly comes from the measurement er-
+ror of the filter’s transmittance, and the drift of the filter’s 
+transmittance induced by temperature change. In the simu-
+lations, we add filter noise of varying intensity while the 
+detector noise is held at a fixed value. Tables 5 and 6 show 
+TABLE 1. RMSE of the reconstruction results for different 
+levels of system’s noise (single-spectral-peak light source)
+S/N
+BP
+Tikhonov 
+regularization
+BPDN
+GPSR-BB
+300/1
+0.95302
+0.00907
+0.01123
+0.00903
+500/1
+0.97332
+0.00630
+0.00911
+0.00679
+1000/1
+0.41401
+0.00529
+0.00649
+0.00508
+TABLE 2. RMSE of the reconstruction results for different 
+levels of system’s noise (broadband light source)
+S/N
+BP
+Tikhonov 
+regularization
+BPDN
+GPSR-BB
+300/1
+11.23877
+0.04522
+0.02894
+0.01279
+500/1
+6.39081
+0.03479
+0.01521
+0.00871
+1000/1
+3.00997
+0.02257
+0.01205
+0.00758
+TABLE 3. RMSE of the reconstruction results for different 
+levels of detector noise (single-spectral-peak light source, 
+intensity of the filter noise is 2.38 × 10
+−7)
+S/N
+BP
+Tikhonov 
+regularization
+BPDN
+GPSR-BB
+300/1
+2.38776
+0.00920
+0.01297
+0.00946
+500/1
+0.86160
+0.00695
+0.01018
+0.00775
+1000/1
+0.42955
+0.00552
+0.00609
+0.00375
+TABLE 4. RMSE of the reconstruction results for different 
+levels of detector noise (broadband light source, intensity of 
+the filter noise is 2.38 × 10
+−7)
+S/N
+BP
+Tikhonov 
+regularization
+BPDN
+GPSR-BB
+300/1
+8.69321
+0.04354
+0.02773
+0.01864
+500/1
+5.47973
+0.03359
+0.01634
+0.01262
+1000/1
+1.68942
+0.02388
+0.01120
+0.00648
+TABLE 5. RMSE of the reconstruction results for different 
+levels of filter noise (single-spectral-peak light source, 
+intensity of the detector noise is 0.1034)
+S/N
+BP
+Tikhonov 
+regularization
+BPDN
+GPSR-BB
+300/1
+0.46179
+0.00569
+0.00636
+0.00381
+500/1
+0.41410
+0.00549
+0.00606
+0.00379
+1000/1
+0.42955
+0.00552
+0.00609
+0.00375
+TABLE 6. RMSE of the reconstruction results for different 
+levels of filter noise (broadband light source, intensity of the 
+detector noise is 0.0059)
+S/N
+BP
+Tikhonov 
+regularization
+BPDN
+GPSR-BB
+300/1
+1.80551
+0.02401
+0.01144
+0.00691
+500/1
+1.88617
+0.02385
+0.01130
+0.00653
+1000/1
+1.68942
+0.02388
+0.01120
+0.00648
+
+
+Current Optics and Photonics, Vol. 5, No. 5, October 2021
+572
+the RMSE of the reconstruction results when using differ-
+ent spectral reconstruction methods, for different levels of 
+filter noise. 
+From the spectral reconstruction results under different 
+levels of detector noise and filter noise, we can draw simi-
+lar conclusions as for Tables 1 and 2. The method based on 
+the GPSR algorithm can recover the spectrum signal almost 
+perfectly under both detector noise and filter noise, and per-
+forms better than other methods.
+The above simulations show that the Tikhonov regu-
+larization algorithm, the BPDN algorithm, and the GPSR 
+algorithm can all solve the spectral reconstruction problem 
+under noisy conditions, and that among them the GPSR 
+algorithm has the best performance. We briefly analyze the 
+reasons for this phenomenon here. Generally, the Tikhonov 
+regularization algorithm solves the L2 norm minimization 
+problem [Eq. (10)], and the GPSR algorithm solves the L1 
+norm minimization problem [Eq. (11)]. Using the L1 norm 
+minimization has advantages over its L2 counterpart. L1 
+norm minimization can generate the sparsest solution to the 
+underdetermined problem, and can give robust performance 
+under noisy conditions [39]; this is beneficial for solving 
+the spectral reconstruction problem under noisy conditions. 
+As for the GPSR and BPDN algorithms, both can solve Eq. 
+(11); the difference is the iterative methods they adopt. Us-
+ing different iterative methods will yield different results. 
+The BPDN algorithm in the simulated experiments uses the 
+Newton method, while the GPSR algorithm uses the Bar-
+zilai and Borwein (BB) method [40]. The Newton method 
+is sensitive to initial values, and the local optimal solution 
+obtained may not be the global optimal solution. The recon-
+struction performance of the BPDN algorithm may be in-
+fluenced by the disadvantages of the Newton method. Our 
+simulations show that the GPSR-BB algorithm can obtain 
+better spectral reconstruction results under noise.
+For further study of the characteristics of the spectral 
+reconstruction method based on the GPSR algorithm, we 
+check the effect of different filter numbers on reconstruc-
+tion performance. We keep the number of spectral bands 
+nλ unchanged, and analyze the reconstruction results when 
+the number of filters varies from 30 to 300. We choose the 
+broadband light source [Fig. 3(b)], and the system’s noise is 
+set to S/N = 500/1. The RMSE of the reconstruction results 
+for different filter numbers is shown in Fig. 9. It is obvious 
+that the accuracy of the reconstruction result improves sig-
+nificantly as the number of filters increases.
+We also characterize the spectral separation capacity of 
+the spectral reconstruction method. We site two narrow-
+band signals close to each other, the spacing between the 
+two peaks being from 10 to 13 nm, and we add noise to the 
+measurements with S/N = 500/1. The reconstruction results 
+are shown in Fig. 10. The spectral reconstruction method 
+we propose can recover the signal when the spacing be-
+tween two peaks is greater than 11 nm; when the spacing 
+is smaller, the two closely positioned spectral signals can 
+hardly be separated.
+In addition to designing a spectral reconstruction method 
+with noise tolerance, selecting a suitable sparsifying ba-
+sis can also be an effective denoising approach. In most 
+situations the original spectrum Φ(λ) is not a sparse or 
+approximately sparse signal, so a sparsifying basis Ψ is 
+also needed in the spectral reconstruction process, and the 
+design of the sparsifying basis will greatly affect the sparse 
+representation of the signal [41, 42]. One way to build the 
+sparsifying basis is by using a traditional transform, such 
+as Fourier transform or wavelet transform [43]. The struc-
+ture of each of these sparsifying bases is stable, and they 
+are generally applicable to signals whose local features 
+have obvious transformations in time-frequency analysis. 
+As a typical transform, the Fourier transform can describe 
+smooth signals well, and it has a denoising function, yet it 
+can hardly describe piecewise smooth signals. To better de-
+scribe a signal that is not smooth, the wavelet transform can 
+be used; the basis function group of the wavelet transform 
+can be built through the translation and scaling of a gener-
+ating function. Most spectra are piecewise smooth, so the 
+wavelet transform will exhibit better performance in sparse 
+representation of a spectral signal. 
+In addition, when using the discrete wavelet transform 
+(DWT) matrix as the sparsifying basis, the sparse signal θ̂ 
+obtained by the reconstruction algorithm can be processed 
+to significantly reduce the noise introduced by ambient 
+light. As shown in Fig. 11, we add white noise to the origi-
+nal broadband spectrum to simulate the noise introduced 
+by ambient light. The spectral reconstruction in Fig. 11(b) 
+shows that the influence of ambient light on the recon-
+structed spectrum is basically eliminated.
+We also find that by designing a suitable filter structure, 
+the spectral reconstruction performance under noise can be 
+greatly improved. The performance of the spectral recon-
+struction method is related to the correlation among the dif-
+ferent response functions of the filters: Smaller correlation 
+FIG. 9. The effect of the number of filters on reconstruction 
+performance.
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+573
+             (a)
+       (b)
+FIG. 11. Denoising effect by using the discrete wavelet transform (DWT) sparsifying basis: (a) original light source with ambient-
+light noise, and (b) spectral reconstruction results using the DWT sparsifying basis.
+       (a)
+ (b)
+                                         (c)
+FIG. 10. The spectral separation capacity of the spectral reconstruction method. In (a)–(c) the spacing between two peaks ranges 
+from 10 to 13 nm as indicated.
+
+
+Current Optics and Photonics, Vol. 5, No. 5, October 2021
+574
+leads to better reconstruction performance. Here we use the 
+Pearson correlation coefficient to evaluate the correlation 
+among the different response functions of the filter, which 
+can be defined as
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+k
+l
+n
+k
+k
+l
+l
+k
+l
+i
+i
+k
+l
+i
+n
+n
+k
+k
+l
+l
+i
+i
+i
+i
+T
+T
+cov
+T
+T
+λ
+λ
+λ
+ρ
+σ σ
+=
+=
+=
+−
+−
+=
+=
+−
+−
+
+
+
+
+
+
+
+ 
+ 
+
+
+, (15)
+where T
+k is the response function of the k
+th filter, cov(T
+k, 
+T
+l) is the covariance of T
+k and T
+l, σTk is the standard devia-
+tion of T
+k, 
+k
+  is the average value of T
+k, k, l ∈ (1, 2, 3, ..., 
+nF) and k ≠ l.
+To verify the impact of correlation on the reconstruction 
+performance, we compare three sets of filter structures with 
+different average correlation coefficients. We set the sys-
+tem’s noise to S/N = 500/1, and we choose the broadband 
+light source [Fig. 3(b)]. The RMSE of the reconstruction 
+results for different filter structures is shown in Table 7. As 
+the average correlation coefficient of the filters increases, 
+the reconstruction results become less accurate. Therefore, 
+to obtain more accurate reconstruction under noise, it is 
+necessary to use a set of filters with a smaller correlation.
+IV. CONCLUSION
+In this paper, the effect of noise on the spectral re-
+construction process was analyzed, and we compare the 
+reconstruction performance of different spectral reconstruc-
+tion methods under noise. To reduce the effect of noise 
+on the filter-based spectrometer, we proposed a spectral 
+reconstruction method based on the GPSR algorithm, and 
+through simulated experiments the superior performance of 
+the proposed method over traditional methods in recovering 
+the spectrum of the source light was proved. The method 
+performs well under noisy conditions, and it can work 
+when the number of filters is less than the number of spec-
+tral bands. In addition, we have proposed other denoising 
+approaches, including selecting a suitable sparsifying basis 
+and designing a filter structure with smaller correlation. 
+Such work can be beneficial to make the spectral recon-
+struction process more useful in applications.
+ACKNOWLEDGMENT
+This study was supported by the National Natural Sci-
+ence Foundation of China under Grant Nos. 61774120 and 
+61705178.
+REFERENCES
+1.	Y. C. Ha, J. H. Lee, Y. J. Koh, S. K. Lee, and Y. K. Kim, “De-
+velopment of an ultraviolet Raman spectrometer for standoff 
+detection of chemicals,” Curr. Opt. Photon. 1, 247–251 (2017).
+2.	N. Rajaram, T. J. Aramil, K. Lee, J. S. Reichenberg, T. H. 
+Nguyen, and J. W. Tunnell, “Design and validation of a clini-
+cal instrument for spectral diagnosis of cutaneous malignan-
+cy,” Appl. Opt. 49, 142–152 (2010).
+3.	A. A. Masoud, K. Koike, M. G. Atwia, M. M. El-Horiny, and 
+K. S. Gemail, “Mapping soil salinity using spectral mixture 
+analysis of landsat 8 OLI images to identify factors influenc-
+ing salinization in an arid region,” Int. J. Appl. Earth Obs. 
+Geoinf. 83, 101944 (2019).
+4.	C. Kim and T. Ji, “Real-time spectroscopic methods for analy-
+sis of organic compounds in water,” Curr. Opt. Photon. 3, 
+336–341 (2019).
+5.	C. Zhang, G. Cheng, P. Edwards, M.-D. Zhou, S. Zheng, and 
+Z. Liu, “G-Fresnel smartphone spectrometer,” Lab. Chip 16, 
+246–250 (2016).
+6.	D. R. Lobb, “Imaging spectrometers using concentric optics,” 
+Proc. SPIE 3118, 339–347 (1997).
+7.	H.-A. Lin, H.-Y. Hsu, C.-W. Chang, and C.-S. Huang, “Com-
+pact spectrometer system based on a gradient grating period 
+guided-mode resonance filter,” Opt. Express 24, 10972–10979 
+(2016).
+8.	T. Pügner, J. Knobbe, and H. Grüger, “Near-infrared grating 
+spectrometer for mobile phone applications,” Appl. Spec-
+trosc. 70, 734–745 (2016).
+9.	M. Schardt, P. J. Murr, M. S. Rauscher, A. J. Tremmel, B. R. 
+Wiesent, and A. W. Koch, “Static Fourier transform infrared 
+spectrometer,” Opt. Express 24, 7767–7776 (2016).
+10.	F. Cai, R. Tang, S. Wang, and S. He, “A compact line-detection 
+spectrometer with a Powell lens,” Optik 155, 267–272 (2018).
+11.	X. Ma, M. Li, and J. He, “CMOS-compatible integrated spec-
+trometer based on echelle diffraction grating and MSM photo-
+detector array,” IEEE Photonics J. 5, 6600807 (2013).
+12.	S. Zheng, H. Cai, J. Song, J. Zou, P. Y. Liu, Z. Lin, D.-L. 
+Kwong, and A.-Q. Liu, “A single-chip integrated spectrometer 
+via tunable microring resonator array,” IEEE Photonics J. 11, 
+6602809 (2019).
+13.	J. Bao and M. G. Bawendi, “A colloidal quantum dot spec-
+trometer,” Nature 523, 67–70 (2015).
+14.	Z. Yang, T. Albrow-Owen, H. Cui, J. Alexander-Webber, F. 
+Gu, X. Wang, T.-C. Wu, M. Zhuge, C. Williams, P. Wang, A. V. 
+Zayats, W. Cai, L. Dai, S. Hofmann, M. Overend, L. Tong, Q. 
+Yang, Z. Sun, and T. Hasan, “Single-nanowire spectrometers,” 
+Science 365, 1017–1020 (2019).
+15.	Z. Wang and Z. Yu, “Spectral analysis based on compressive 
+sensing in nanophotonic structures,” Opt. Express 22, 25608–
+25614 (2014).
+16.	C. Huang, G. Xia, S. Jin, M. Hu, S. Wu, and J. Xing, “Denois-
+ing analysis of compact CCD-based spectrometer,” Optik 157, 
+TABLE 7. The impact of correlation on reconstruction perfor­
+mance
+Average correlation coefficient
+RMSE
+0.135
+0.00650
+0.237
+0.00871
+0.390
+0.02839
+
+
+Research on a Spectral Reconstruction Method with Noise Tolerance - Yunlong Ye et al.
+575
+693–706 (2018).
+17.	H. Yan and Y. Liu, “Improved gradient projection algorithm 
+for deblurred image application,” J. Phys.: Conf. Ser. 1575, 
+012021 (2020).
+18.	X. Zhang, Y. Ren, G. Feng, and Z. Qian, “Compressing en-
+crypted image using compressive sensing,” in Proc. 2011 
+Seventh International Conference on Intelligent Information 
+Hiding and Multimedia Signal Processing (Dalian, China, Oct. 
+2011), pp. 222–225.
+19.	Y. Zuo, J. Zhang, and H. Xi, “Influence of detector noise on 
+infrared images,” Proc. SPIE 4548, 381–386 (2001).
+20.	Y. Dai and J. Xu, “The noise analysis and noise reliability 
+indicators of optoelectron coupled devices,” Solid-State Elec-
+tron. 44, 1495–1500 (2000).
+21.	U. Kurokawa, B. I. Choi, and C.-C. Chang, “Filter-based min-
+iature spectrometers: spectrum reconstruction using adaptive 
+regularization,” IEEE Sens. J. 11, 1556–1563 (2011).
+22.	C. C. Chang, N.-T. Lin, U. Kurokawa, and B. I. Choi, “Spec-
+trum reconstruction for filter-array spectrum sensor from 
+sparse template selection,” Opt. Eng. 50, 114402 (2011).
+23.	C.-C. Chang and H.-N. Lee, “On the estimation of target spec-
+trum for filter-array based spectrometers,” Opt. Express 16, 
+1056–1061 (2008).
+24.	Z. Xu, Z. Wang, M. E. Sullivan, D. J. Brady, S. H. Foulger, 
+and A. Adibi, “Multimodal multiplex spectroscopy using pho-
+tonic crystals,” Opt. Express 11, 2126–2133 (2003).
+25.	Z. Leihong, Y. Xiao, Z. Dawei, and C. Jian, “Research on 
+multiple-image encryption scheme based on Fourier transform 
+and ghost imaging algorithm,” Curr. Opt. Photon. 2, 315–323 
+(2018).
+26.	R.-M. Lan, X.-F. Liu, X.-R. Yao, W.-K. Yu and G.-J. Zhai, 
+“Single-pixel complementary compressive sampling spec-
+trometer,” Opt. Commun. 366, 349–353 (2016).
+27.	R. Zhu, G.-S. Li, and Y. Guo, “Block-compressed-sensing-
+based reconstruction algorithm for ghost imaging,” OSA Con-
+tinuum 2, 2834–2843 (2019).
+28.	Y. C. Eldar and G. Kutyniok, Compressed Sensing: Theory 
+and Applications (Cambridge University Press, Cambridge, 
+UK, 2012).
+29.	S. S. Chen, D. L. Donoho, and M. A. Saunders, “Atomic 
+decomposition by basis pursuit,” SIAM Rev. 43, 129–159 
+(2001).
+30.	T. Yang, C. Li, Z. Wang, and H. Ho, “An ultra compact spec-
+trometer based on the optical transmission through a micro 
+interferometer array,” Optik 124, 1377–1385 (2013).
+31.	M. A. T. Figueiredo, R. D. Nowak, and S. J. Wright, “Gradient 
+projection for sparse reconstruction: application to compressed 
+sensing and other inverse problems,” IEEE J. Sel. Top. Signal 
+Processing 1, 586–597 (2007).
+32.	L. Zhang, Y. Zhai, and X. Wang, “Application of Barzilai-Bor-
+wein gradient projection for sparse reconstruction algorithm to 
+image reconstruction of electrical capacitance tomography,” 
+Flow Meas. Instrum. 65, 45–51 (2019).
+33.	D. Yang, C. Chang, G. Wu, B. Luo, and L. Yin, “Compressive 
+ghost imaging of the moving object using the low-order mo-
+ments,” Appl. Sci. 10, 7941 (2020).
+34.	Z. Wang, X. Ma, R. Chen, G. R. Arce, L. Dong, H.-J. Stock, 
+and Y. Wei, “Comparison of different lithographic source 
+optimization methods based on compressive sensing,” Proc. 
+SPIE 11327, 1132716 (2020).
+35.	D. M. Malioutov, M. Cetin, and A. S. Willsky, “Homotopy 
+continuation for sparse signal representation,” Proc. IEEE 
+International Conference on Acoustics, Speech, and Signal 
+Processing (Philadelphia, PA, USA, Mar. 2005), Vol. 735, pp. 
+v/733–v/736. 
+36.	K. Koh, S.-J. Kim, and S. Boyd, “An interior-point method for 
+large-scale l1-regularized logistic regression,” J. Mach. Learn. 
+Res. 8, 1519–1555 (2007).
+37.	G. Zonios, “Noise and stray light characterization of a compact 
+CCD spectrophotometer used in biomedical applications,” 
+Appl. Opt. 49, 163–169 (2010).
+38.	J. J. Davenport, J. Hodgkinson, J. R. Saffell, and R. P. Tatam, 
+“Noise analysis for CCD-based ultraviolet and visible spectro-
+photometry,” Appl. Opt. 54, 8135–8144 (2015).
+39.	J. Oliver, W. Lee, S. Park, and H.-N. Lee, “Improving resolu-
+tion of miniature spectrometers by exploiting sparse nature of 
+signals,” Opt. Express 20, 2613–2625 (2012).
+40.	J. Barzilai and J. M. Borwein, “Two-point step size gradient 
+methods,” IMA J. Numer. Anal. 8, 141–148 (1988).
+41.	H. Li, D. Xiang, X. Yang, and X. Zhang, “Compressed sensing 
+method for IGBT high-speed switching time on-line monitor-
+ing,” IEEE Trans. Ind. Electron. 66, 3185–3195 (2019).
+42.	H.-T. Fang and D.-S. Huang, “Noise reduction in lidar signal 
+based on discrete wavelet transform,” Opt. Commun. 233, 
+67–76 (2004).
+43.	M. Zhang, C. Lu, and C. Liu, “Improved double-threshold 
+denoising method based on the wavelet transform,” OSA Con-
+tinuum 2, 2328–2342 (2019).

@@ -1,0 +1,1183 @@
+MEMS-Enabled On-Chip Computational Mid-Infrared Spectrometer
+Using Silicon Photonics
+Qifeng Qiao, Xinmiao Liu, Zhihao Ren, Bowei Dong, Ji Xia, Haoyang Sun, Chengkuo Lee,*
+and Guangya Zhou*
+Cite This: ACS Photonics 2022, 9, 2367−2377
+Read Online
+ACCESS
+Metrics & More
+Article Recommendations
+*
+sı
+Supporting Information
+ABSTRACT: On-chip spectrometers using silicon photonics offer a compact, energy-efficient, and cost-effective solution to
+biochemical spectroscopy and hyperspectral imaging in integrated and portable application scenarios. The mid-infrared (MIR)
+spectral band is critical to spectroscopic sensing. However, the existing on-chip spectrometer approaches are limited in the MIR.
+Here, we present an on-chip computational spectrometer in MIR (3.7−4.05 μm) using an MEMS-enabled silicon photonic
+integrated device, which is realized via the time-domain modulation of reconfigurable waveguide couplers. The electrostatically
+actuated on-chip spectrometer intrinsically features low power consumption and single-pixel detection and offers multiplexing
+advantages, potentially leading to a high signal-to-noise ratio. We achieve laser spectrum reconstruction across a large bandwidth
+(350 nm) experimentally. Furthermore, based on a linear superposition assumption, we achieve the polychromatic light
+reconstruction of narrow spectral features (3 nm resolution) and a broad absorption spectrum of nitrous oxide gas using a
+regularized regression method.
+KEYWORDS: MIR photonics, photonic integrated circuit, reconfigurable photonics, optical MEMS, on-chip spectrometer
+■INTRODUCTION
+Optical spectrometers are among the most widely used types
+of experimental instruments for biochemical sensing and
+material analysis.1 In the past decades, there has been a
+rapid increase in the use of spectrometer systems in many
+academic and industrial areas, including precision agriculture,
+environmental monitoring, marine science, and food industry.2
+In these application scenarios, the spectroscopy analysis is
+often expected to be instantaneous on the site, which leads to
+the development of miniaturized optical spectrometers.3−7
+Among them, silicon photonics is one of the most promising
+technologies. Leveraging the advantages of CMOS compati-
+bility and integration, the chip-scale spectrometers based on
+photonic integrated circuits (PIC) can be compact and of low
+cost.8,9
+To date, most on-chip spectrometers based on PICs rely on
+planar dispersive gratings,10−14 narrowband filters,15,16 and
+Fourier transform (FT) interferometers.17−21 Besides, some
+approaches are using computational reconstruction.22,23 On-
+chip spectrometers based on dispersive elements and
+narrowband filters can provide a high resolution by spectral
+channel division. However, signal-to-noise (SNR) could be a
+problem for these devices since light is split into many spectral
+channels. What is more, the multichannel architecture often
+requires a corresponding detector array, which increases the
+footprint, cost, and complexity of the PICs. Compared to these
+systems, FT spectrometers have some inherent advantages,
+known as the multiplexing advantage (Fellgett’s advantage)
+and high optical throughput (Jacquinot’s advantage). Thus, it
+brings a high SNR to FT spectral analysis. With reconfigurable
+components in PIC circuits, an on-chip FT spectrometer can
+be implemented with a single-pixel detector and digitalized
+control. Combining the thermo-optic tuning and Mach−
+Received:
+March 8, 2022
+Published: June 23, 2022
+Article
+pubs.acs.org/journal/apchd5
+© 2022 American Chemical Society
+2367
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+Downloaded via NATL UNIV OF SINGAPORE on August 13, 2022 at 04:45:04 (UTC).
+See https://pubs.acs.org/sharingguidelines for options on how to legitimately share published articles.
+
+
+Zehnder interferometer (MZI) waveguide architecture,
+researchers have demonstrated on-chip FT spectrometers
+working around 1550 nm wavelength with good performances
+(resolution below nanometer and bandwidth of tens of
+nanometers).17,19,21
+However, despite the work demonstrated in the near-
+infrared wavelength range, investigations on on-chip spec-
+trometers might not be adequate in the MIR wavelength range
+(typically defined as 2−20 μm).24−28 The MIR range contains
+strong characteristic absorption bands of many biochemical
+molecules. The so-called fingerprint region is of great interest
+to spectroscopy sensing.29,30 The MIR on-chip spectrometer
+can play an important role in lab-on-a-chip applications.31
+Prior work in MIR has mainly demonstrated the FT
+spectrometer based on discrete MZIs.24−27 The spatial
+heterodyne spectrometer design relies on the number of
+discrete MZIs to increase its spectral resolution, which
+demands a high-cost detector array and could result in an
+excessive footprint. To further develop on-chip applications in
+MIR, reconfigurable MIR photonic devices are desired to
+empower on-chip optical functionalities. Recent years have
+seen growing interest in reconfiguration in MIR PICs.32 The
+reconfiguration mechanisms, including mechanical motion,33
+free carrier injection,34 thermo-optic tuning,35 and so forth,
+have been demonstrated in the MIR region. Among these
+approaches,32 optical MEMS on a silicon-on-insulator (SOI)
+platform could be an auspicious choice for the MIR
+reconfigurable photonics. With the removal of the buried
+oxide (BOX) layer, mechanical motion of the on-chip photonic
+waveguide can be enabled. Meanwhile, the optical loss induced
+by BOX in the MIR region can be eliminated, thus sustaining
+the competitiveness and cost-effectiveness of SOI technology.
+Additionally, reconfiguration using electrostatic actuation
+could offer an energy-efficient, low-loss, and effective approach
+to the MIR on-chip optical systems.36 Thus, the MEMS-
+enabled silicon PIC device could be a promising solution to
+the high-performance on-chip spectrometer in the MIR.
+In this paper, we experimentally demonstrate an MIR on-
+chip silicon MEMS-enabled computational spectrometer (Si-
+McS) working around a wavelength of 4 μm, which is
+accomplished using a pair of simple MEMS tunable waveguide
+couplers on an SOI platform. The proposed Si-McS concept
+brings inherent FT advantages to the on-chip spectroscopy,
+ensuring a high SNR and requiring a single-pixel photodetector
+only. Moreover, the presented MEMS-reconfigurable approach
+shows superior performance for on-chip reconfiguration
+photonics in the MIR SOI platform (see Supporting
+Information Note 8). It breaks SOI’s limitation in the MIR
+region and potentially facilitates chip-level integration by fully
+leveraging the infrastructures built on SOI platforms. These
+contribute to the high performance and compactness of the
+demonstrated Si-McS in MIR (see Supporting Information
+Note 8). The effective tuning of the waveguide couplers can be
+realized using electrostatic actuation in our 3D heterogeneous
+Figure 1. Overview of the Si-McS architecture. (a) Schematic of the MIR spectroscopy system using the Si-McS chip. MIR light goes through the
+gas cell first. Then, the absorbed light is coupled into the Si-McS chip for analysis. Through computational reconstruction using the measured
+interferogram at the detector, the target spectrum can be reconstructed. (b) Zoom-in view of the on-chip device under electrostatic actuation where
+the MEMS cantilever is actuated upward. (c) Cross-section view denoting the electrical potential applied and mechanical motion of the on-chip
+device during operation. (d) Optical mode profiles (Hy) of the waveguide coupler.
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2368
+
+
+integrated device.33,37 The spectra can be acquired via the
+time-domain actuation of the MEMS tunable waveguide
+couplers. We implement machine learning-regularized regres-
+sion methods to computationally reconstruct the spectra. We
+experimentally demonstrate the sparse spectrum reconstruc-
+tion of laser peaks on every 1 nm over a 350 nm bandwidth
+(3.7−4.05 μm). Based on a linear superposition assumption on
+detector response, we carry out polychromatic spectrum
+reconstruction using laser measurement results. Double-
+wavelength reconstruction results show a 3 nm resolution of
+the proposed Si-McS device. Moreover, a gas cell inflated by
+nitrous oxide (N2O) gas is placed into the experimental setup
+to examine the Si-McS’s capability for absorption spectrum
+reconstruction. The experimental results show that the spectral
+absorption characteristic of N2O can be well reconstructed and
+recognized. The proposed Si-McS features easy integration, a
+high SNR ratio, and a compact footprint (4.5 mm × 0.6 mm).
+It could become an important building block for future
+spectroscopic sensing in the MIR region. The schematic of the
+demonstrated spectroscopy system is shown in Figure 1a.
+■RESULTS
+Si-McS Architecture. The concept of the Si-McS is
+analogous to Fourier transform infrared spectrometer (FTIR),
+which relies on the modulation of the optical path difference
+(OPD). In the proposed concept, OPD modulation is obtained
+by active time-domain modulation of the coupling strength
+between photonic waveguides. The suspended silicon wave-
+guide is designed to be a single mode with TE polarization. It
+is known that the coupling between a pair of waveguides can
+be understood as the interference between the formed two
+supermodes in the waveguide coupler, namely, symmetric
+mode (SM0) and asymmetric mode (SM1). Considering the
+effective index difference between SM0 and SM1 (Δn(λ) =
+n1(λ) −n2(λ)), the interference can be observed at the output
+through and drop ports after these two modes propagate
+through a given coupling length. Thus, interferograms can be
+generated at either output port by time-domain tuning of the
+coupling strength of a waveguide coupler with a certain
+coupling length, which is similar to the modulation of OPD. In
+our prior work,18 we briefly elaborate on the working principle
+of a discrete design with simulation results. Here, we introduce
+our architecture on an MIR silicon photonics platform with a
+continuous tuning of a fixed-length waveguide coupler. In the
+aspect of photonics design, suspended waveguide with
+subwavelength grating (SWG) claddings on the SOI platform
+is adopted by considering easy integration between the MEMS
+actuator and MIR photonic waveguide (see Figure 1b insets).
+The waveguide coupler is formed by two silicon strip
+waveguides with single-side SWG claddings. Waveguide
+claddings are converted from the single side to the double
+side to define the movable and stationary regions, as shown in
+Figure 1b. In the aspect of MEMS design, as shown
+schematically in Figure 1c, the MEMS cantilever can be
+electrostatically actuated upward using our 3D heterogeneous
+integration method.33 In such an architecture, coupling
+strength between these two photonic waveguides can be
+reconfigurable through adjusting the vertical gap. From our
+simulation results (Figure 1d), adjusting the vertical gap offers
+a convenient way for tuning the effective index difference
+Δn(λ). Details of the waveguide study can be found in
+Supporting Information Note 1. We can choose either the
+through port or drop port of the waveguide coupler as the
+output and we can actively adjust the vertical gap to measure
+the interferogram at the output, thus enabling the acquisition
+of the light spectrum. The propagation loss and bending loss of
+the suspended silicon waveguide with SWG claddings are
+measured to be −2.9 dB/cm and −0.076 dB each (Supporting
+Information Note 1). The response time of the MEMS
+cantilever actuator is estimated to be 11.5 μs (Supporting
+Information Note 3). The device footprint is 4.5 mm × 0.6
+mm, which includes a pair of reconfigurable photonic
+waveguide couplers.
+For a directional coupler with a certain coupling length L,
+the output power from the through and drop ports can be
+described as38
+=
+P
+L
+B
+L
+n
+( , )
+( )cos
+through
+2 i
+k
+jjj
+y
+{
+zzz
+(1)
+=
+P
+L
+B
+L
+n
+( , )
+( )sin
+drop
+2 i
+k
+jjj
+y
+{
+zzz
+(2)
+where Pthrough and Pdrop are the output light power at the
+corresponding ports, B is the spectrum of input light, λ is the
+light wavelength, and Δn is the effective index difference
+between SM0 and SM1. It is well-known that the interferogram
+of a Michelson interferometer in a traditional FTIR can be
+given as18
+=
++
+=
+I
+x
+B
+x
+B
+x
+( , )
+0.5 ( ) 1
+cos 2
+( )cos
+D
+2
+i
+k
+jjjj
+i
+k
+jjj
+y
+{
+zzz
+y
+{
+zzzz
+i
+k
+jjj
+y
+{
+zzz
+(3)
+where x is the OPD and ID is the output power of the
+interferometer. From eqs 1−3, it can be found that the
+analogous OPD offered by the Si-McS can be understood as x
+= LΔn. More specifically, in the operation of the Si-McS, we
+can use a time-domain bias voltage (Vbias) signal on the MEMS
+actuator to adjust the vertical coupling gap (h) between the
+waveguides, thus realizing the time-domain modulation of Δn
+step by step. To further clarify the intrinsic FT mechanism of
+the proposed device with the fact that Δn is a function of both
+h and λ taken into consideration, Δn(λ,h) is approximated by a
+polynomial function
+=
++
++
++
++
+n
+h
+f
+f
+h
+a
+a
+b
+b h
+b h
+b h
+( , )
+( ) ( )
+(
+)(
+)
+1
+2
+1
+2
+1
+2
+3
+2
+4
+3
+(4)
+which is validated using numerical calculations (see Supporting
+Information Note 2). Given the device geometry, the
+polynomial approximation can be fitted with a 99.5% R-
+squared value.
+Furthermore, combining eqs 1 and 4, the output power of
+the through port in the proposed spectrometer can be given as
+=
+·
+=
+·
+=
+P
+x
+u
+B u
+L
+n
+h
+B u
+L f
+f
+h
+B u
+ux
+(
+, )
+( ) cos
+( , )
+( ) cos
+( ) ( )
+( ) cos (
+)
+h
+h
+through
+2
+2
+1
+2
+2
+i
+k
+jjjj
+y
+{
+zzzz
+i
+k
+jjjjj
+y
+{
+zzzzz
+(5)
+where the effective wavenumber and OPD are defined as u =
+f1(λ)/λ = (a1 + a2λ)/λ and xh = L·f 2(h), respectively.
+Therefore, B(u) can be achieved by performing an FFT of
+the interferogram Pthrough. With λ = a1/(u −a2), the spectrum
+B(λ) can be obtained by mapping the effective wavenumber u
+to the wavelength λ. The eqs 4 and 5 highlight the conceptual
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2369
+
+
+working mechanism of the Si-McS using an MEMS-tunable
+directional coupler. In our demonstrations, considering the fact
+that functions f1 and f 2 are difficult to be precisely determined
+experimentally, we used a regularized regression model for
+computational spectrum reconstruction instead.
+Experimental Device. We experimentally validated the Si-
+McS concept in the MIR region using our 3D assembled
+photonic MEMS device. The experimental device consists of a
+glass chip (500 μm thick) on top and an SOI MEMS PIC chip
+(500 nm-thick device layer and 2 μm-thick BOX) at the
+bottom. The optical waveguides are fabricated on an SOI wafer
+using a foundry-compatible silicon photonics process.
+The gold-patterned glass chip is aligned and bonded on the
+SOI chip via aluminum (Al) solders by flip-chip bonding,
+providing the top electrode for electrostatic actuation. This 3D
+integration approach offers a large tunable range for the
+MEMS cantilevers, thus enabling the effective tuning of the
+waveguide coupler.33 As shown in Figure 2b, the Al solders
+also work as the electrical interconnect between the top and
+bottom chips. With insulation trenches on the SOI chip, we
+can apply bias voltage to the top electrode on the glass chip via
+the electrical input on the SOI chip, which facilitates the Si-
+McS operation. The optical input and output are achieved via
+the fiber-to-chip grating couplers. Here, we choose a narrow
+coupling gap of 200 nm for the waveguide coupler (Figure 2a),
+which depends on our current nanofabrication capabilities. To
+validate the concept, we choose a long coupling length of 7680
+μm, which is offered by two cascaded waveguide couplers
+(shown in Figure 2c,d). A longer coupling length could lead to
+a finer spectrometer resolution. Here, we estimate the
+theoretical resolution based on the Rayleigh criterion,
+Supporting Information Note 4), and choose a coupling
+length of 7680 μm which is promising for our experimental
+demonstration. Besides, the coupling length is chosen to be the
+integral multiple of the SWG period to well integrate the
+waveguide design. The two MEMS cantilevers are electrically
+grounded and actuated simultaneously by a top electrode
+covering both of them (Figure 2b). We use the design of two
+MEMS cantilevers here to achieve design compactness.
+Considering an MEMS cantilever length of 85 μm and an
+initial air gap of 12 μm, the pull-in voltage of the electrostatic
+actuation can be estimated to be 140 V.39
+Before we proceed to the experimental validation of the Si-
+McS, we carry out a characterization process to test the
+Figure 2. (a) SEM image of the waveguide coupling region. (b) A-A′ section view of the 3D assembled device. (c) SEM image of the movable
+waveguide coupler. (d) Optical microscopy image of the MEMS actuation region of the device.
+Figure 3. (a) Experimental setup for the MIR reconfigurable photonics device characterization. (b) Calibrated measurement matrix D of the on-
+chip spectrometer. The wavelength range is swept in a 1 nm high resolution, and 71 steps of DC bias voltage are gradually applied to the MEMS
+actuator.
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2370
+
+
+electrostatic actuation voltage using a photonic switch design
+on the same chip (see Supporting Information Note 3). This
+could help us understand the decouple condition of the
+reconfigurable waveguide coupler and the pull-in voltage of the
+MEMS cantilever. The experimental setup for this device
+characterization is depicted in Figure 3a. An MIR tunable laser
+is used as the single-wavelength light source. The optical
+input/output to the Si-McS is achieved using fiber-to-chip
+grating couplers. Depending on the transmission bandwidth of
+the grating coupler, we carry out the optical testing in the
+wavelength range between 3.7 and 4.05 μm. From the voltage
+testing results in Supporting Information Note 3, it can be
+found that the resonance frequency of the MEMS actuator is
+87 kHz (roughly corresponds to an 11.5 μs device response
+time) and 80 V bias voltage is sufficient to actuate the
+waveguide coupler from a fully coupled to a decoupled
+condition. To simplify the experimental implementation and
+compensate for the fabrication imperfections of the on-chip
+device, we adopt a computational scheme to reconstruct the
+spectrum with the use of the machine learning regression
+method. We choose a time-sequenced bias voltage from 0 to
+80 V to acquire the interferogram. The bias voltage sequence is
+applied by a 2 V interval between 0 and 20 V gradually
+followed by a 1 V interval from 20 to 80 V, which is a total of
+71-step bias voltage. A larger voltage increase is chosen at
+lower bias because the optical response is relatively small below
+20 V bias voltage (see the actuation calibration results in
+Supporting Information Note 3).
+Next, we work on the demonstration of the Si-McS spectrum
+reconstruction using the depicted setup (Figure 3a). At the
+first step, we work on the calibration of the computational
+reconstructive Si-McS. The output intensities from the drop
+port of the Si-McS are collected with a step-by-step increase of
+bias voltage (71 steps) applied at each wavelength between 3.7
+and 4.05 μm with an increase of 1 nm. These calibration
+intensity data form matrix A (m × n), indicating the spectral
+response of the device in the current testing system. Each
+column of A represents specific intensity outputs of the Si-McS
+generated at the corresponding light wavelength and includes
+71 optical intensity points (m = 71) under the time-domain
+MEMS actuation. A total of 351 columns correspond to the
+swept wavelength points (n = 351) by the MIR tunable laser.
+In the experimental testing setup, the testing system has a
+wavelength-dependent feature caused by the tunable laser
+output, grating coupler efficiency, and detector spectral
+response. The optical transmission through a straight wave-
+guide on the same chip, which comprises the same wavelength-
+dependent testing system feature, is measured and regarded as
+the reference input light intensity. The laser swept spectrum
+passing through the straight waveguide is recorded as a vector
+G = [g1, g2, ..., gn]T with 351 elements. Thus, the calibrated
+measurement matrix D (m × n) of the on-chip spectrometer
+can be given as
+=
+·
+A
+g
+g
+D
+diag
+1 , ..., 1
+n
+1
+i
+k
+jjjjjj
+y
+{
+zzzzzz
+(6)
+where diag represents the diagonal matrix form. Once the
+measurement matrix D is calibrated, it remains fixed if the
+system is unchanged and can be used to retrieve the light
+spectrum directly. For an arbitrary incident light spectrum S (a
+column vector with 351 elements), the interferogram I
+measured by the detector is
+=
+·
+I
+D S
+(7)
+Figure 4. Single-wavelength spectrum reconstruction. (a) Reconstructed laser lines (gray lines) showing the original solutions of S by the elastic-
+net method (training sets in blue and reference intensity in orange). (b) Measured interferograms at several different laser wavelengths. (c)
+Corresponding reconstructed spectra from the interferograms shown in (b).
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2371
+
+
+where I is a column vector with 71 elements. Each element
+represents the optical output intensity at a certain bias voltage.
+As the calibrated measurement matrix D used in our system is
+in a size of 71 × 351 (shown in Figure 3b), we use the
+regularized regression techniques to solve the underdeter-
+mined equation to determine the incident spectrum S. To
+properly solve the sparsity signal and account for system
+robustness, we choose the regularized regression model
+including both L1-norm and L2-norm, namely, the elastic-net.
+It solves the regularized regression problem
+{
++
++
+}
+I
+DS
+S
+S
+minS
+2
+2
+1
+1
+2
+2
+2
+(8)
+where two regularized weights (hyperparameter α1 and α2) are
+applied to the L1-norm and L2-norm of the solution (S vector),
+respectively. In this study, we adopt scikit-learn to implement it
+in Python.40
+Single-Wavelength Reconstruction. To achieve appro-
+priate hyperparameters for our Si-McS characteristics, we
+implement a machine learning approach for grid search of α1.
+For reconstruction of single-wavelength spectra, we manually
+adjust the hyperparameter α2 to zero by considering the
+signal’s extreme sparsity. For grid search of the hyperparameter
+α1, we measure the interferograms at 34 wavelengths using
+time-domain MEMS actuation. These wavelengths are evenly
+chosen across the whole operation wavelength band (Figure
+4a). These 34 measured interferograms form the training sets Ij
+(j = 1, 2, ... 34), where each I is a column vector with 71
+elements. By solving the regularized problem, we can obtain
+the corresponding incident spectrum Sj. As the tunable MIR
+laser has a linewidth of 0.2 nm, we take the reference incident
+laser spectrum as a column vector Ŝj with high sparsity that has
+only one nonzero intensity value taken from the measurement
+G = [g1, g2, ..., gn]T. For example, given a laser input from the
+ith wavelength λi, only Ŝj(i) equals G(i) and all the other
+elements in Ŝj are zero. We carry out the grid search in the 34
+training sets to choose α1 that minimizes the total mean
+squared error (MSE) between the solution Sj and Ŝj. The total
+MSE is calculated by
+[
+]
+=
+=
+n
+i
+i
+S
+S
+1
+( )
+( )
+j
+i
+n
+j
+j
+1
+34
+1
+2
+l
+m
+oo
+n
+oo
+|
+}
+ooo
+~
+oo
+(9)
+From the grid search in the training set, the optimal α1 is
+determined to be 3.79 × 10−4. The determined hyper-
+parameter α1 represents an intrinsic characteristic of the on-
+chip Si-McS. Thus, it is consistently applied to the following
+spectrum reconstruction. Next, we use the hyperparameters
+(α1 = 3.79 × 10−4 and α2 = 0) to predict the incident laser
+wavelength across the spectral range (3.7−4.05 μm) (Figure
+4a). An interferogram I is collected at each selected
+wavelength, and it is used to solve the regularized problem
+for the incident spectrum S. The remaining 317 recorded
+interferograms form the test sets with their reconstructed laser
+spectra are presented in gray where the 34 training sets are
+denoted in blue. The reference intensity G is plotted as a
+continuous line in orange. It is noted that the intensity dip
+around a wavelength of 3.8 μm is caused by the nonuniform
+MIR laser output. A few reconstructed laser spectra that do not
+belong to the training sets are chosen to further demonstrate
+the high-performance reconstruction (Figure 4c), and their
+corresponding interferograms are shown in Figure 4b. The
+regression model training and prediction results are
+summarized in Table 1. The low level of MSE (10−4) in the
+testing sets proves that the adopted machine learning
+regression method is valid to be used on the Si-McS
+spectrometer for sparse signal reconstruction. Over the
+whole working wavelength range (350 nm bandwidth), the
+laser wavelengths can be precisely reconstructed with ±1 nm
+accuracy.
+Double-Wavelength Reconstruction. Due to the lack of
+polychromatic MIR light sources in our laboratory, we use the
+following scheme to emulate the experimental polychromatic
+interferograms using a tunable laser source. Assuming a
+polychromatic light source with a known spectrum containing
+a total of m number of wavelength components, the tunable
+laser is tuned to each wavelength component with its intensity
+properly set, and its interferogram Ih (h = 1 to m) from the Si-
+McS is recorded. Assuming that the detector response is
+proportional to the linear superposition of all intensities at
+those wavelength components at the detector, the experimental
+interferogram (Ip) by a polychromatic input containing m
+wavelength components can be given as a summation of all Ih
+recorded
+=
+=
+I
+I
+h
+m
+h
+p
+1
+(10)
+Under this scheme, we reconstruct the polychromatic
+spectrum using the experimental interferogram Ip. Further
+discussion on the validation of the linear superposition
+assumption can be found in Supporting Information Note 5.
+Two tunable laser sources working in the near-infrared
+wavelength range are adopted in the testing of a waveguide
+coupler device. The measured output optical intensity by
+simultaneously injecting two wavelengths equals approximately
+to the summation of the individually measured optical
+intensities when each wavelength is injected alone. This is
+valid during our mulitesting with different combinations of
+wavelengths and input powers. It could be ideal to use an
+additional MIR laser or a broadband MIR light source to carry
+out the experiments. However, with the lack of an extra MIR
+laser or a commercially available MIR broadband light source
+in the laboratory, we evaluate the proposed Si-McS perform-
+ance under the well-validated linear superposition assumption
+and a single tunable MIR laser.
+We carry out the spectrum reconstruction on the
+polychromatic input consisting of two laser lines to determine
+the spectral resolution of the Si-McS under the adopted
+computational scheme. In the first step, we obtain the
+experimental interferogram Ip. Given the reconstruction for
+Δλ = 2 nm as an example, we first measure the interferograms
+I1 (71 × 1) and I2 (71 × 1) at wavelengths of 3.900 and 3.902
+μm, respectively. The experimental interferogram Ip generated
+by a polychromatic light source containing these two
+wavelengths (3.900 and 3.902 μm) is given as Ip = I1 + I2.
+Next, we use Ip and the same calibrated measurement matrix
+(D) to solve the regularized regression problem to specify the
+Table 1. Model Fitting and Prediction Results for Laser
+Lines Using the Elastic-Net Method (α2 = 0)
+number of
+laser lines
+α1
+total MSE
+average MSE
+training
+sets
+34
+3.79 × 10−4
+3.87 × 10−3
+1.29 × 10−4
+testing
+sets
+317
+3.79 × 10−4
+4.82 × 10−2
+1.52 × 10−4
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2372
+
+
+polychromatic light spectrum Sp. Considering the sparsity of
+the polychromatic input, we adopt the elastic-net method and
+the same hyperparameters (α1 = 3.79 × 10−4 and α2 = 0) as
+those used in the previous section to solve the problem.
+It can be found that the wavelength and intensity features of
+the spectra can be well reconstructed (Figure 5a). The
+reference intensity shown in Figure 5 is taken from the
+measurement intensity vector G. The spectral resolution of the
+Si-McS is determined by the minimum resolvable spacing
+between the two laser lines. In our experiments, a 2 nm
+resolution can be barely obtained (Figure 5b) and a 3 nm
+resolution is achieved (Figure 5c), which exceeds the Rayleigh
+criterion (Supporting Information Note 4). Besides, we analyze
+the robustness of the spectrum reconstruction using the
+proposed algorithm with the same hyperparameter (α1 = 3.79
+× 10−4 and α2 = 0). The main factor causing the degradation
+of the reconstruction performance could be the measurement
+errors from the MEMS-enabled PIC device. Here, we analyze
+the relative errors of two acquired interferograms at the same
+wavelength (see Supporting Information Note 6). Among 300
+sets of measurement data, the relative errors extracted range
+from 1.2 to 3.1% with an average of 2.4%. Next, we numerically
+apply increasing noise levels to the experimental interferograms
+and investigate the reconstruction performances. It can be
+found that the spectra can be well retrieved up to a maximum
+of 4% relative error in the experimental interferograms. The
+details of the investigation can be found in Supporting
+Information Note 6. These results show the accuracy and
+repeatability of our MEMS-enabled device for the data
+acquisition and the robustness of spectrum reconstruction
+using the proposed computational technique.
+Broad Absorption Spectrum Reconstruction. The MIR
+region is important for absorption spectroscopy. Here, we use
+the Si-McS to demonstrate the broad spectrum reconstruction
+for N2O gas absorption spectroscopy. N2O gas is a potent
+greenhouse gas that destructs the stratospheric ozone.41 The
+miniaturized spectroscopic instrumentations could contribute
+to the monitoring of N2O emissions. A customized gas cell (25
+cm optical length) is inserted into the current testing setup
+between the half-wave plate and ZnSe lens for the investigation
+of gas spectroscopy (Supporting Information Note 7). Thus, it
+is necessary to recalibrate the measurement matrix D in the
+modified testing setup with the gas cell inserted.
+Figure 5. Double-wavelength spectrum reconstruction. (a) Reconstructed and reference polychromatic spectra comprising double laser lines with
+different wavelength spacings (solved using the elastic-net method with the same hyperparameters used for Figure 4). (b) Zoom-in view of the
+spectra with 2 nm spacing. (c) Zoom-in view of the spectrum with 3 nm spacing. Two laser lines are well-distinguished.
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2373
+
+
+We use the gas cell filled with ambient air for testing system
+calibration. The same time-sequenced bias voltage with 71
+steps is adopted. First, we sweep the tunable laser passing
+through the straight waveguide with a step of 4 nm from 3.82
+to 4.02 μm. The measured results G′ are regarded as the
+reference input light intensity passing through the air gas cell.
+Second, we retrieve the spectral response matrix A′. Thus, we
+can achieve the calibrated measurement matrix D′ under the
+current gas spectroscopy testing system using eq 6. Similarly,
+we still adopt the elastic-net method (hyperparameter α1 =
+3.79 × 10−4) to implement the computational reconstruction.
+Considering the target broadband signal, we put a relatively
+large weight on the α2 and adjust the hyperparameter α2 =
+99α1 to increase the model robustness.
+Next, we work on the reconstruction of light spectra passing
+through the air gas cell (Sair). Again, based on the linear
+superposition response of the Si-McS, the experimental
+interferogram Iair for a polychromatic input comprising 51
+wavelength elements is obtained by a summation of all the
+interferograms measured at each wavelength. The measured
+interferograms can be found in Supporting Information Note
+7. The calibrated measurement matrix D′ and experimental
+interferogram Iair are used to solve the regularized problem for
+the spectrum Sair. The reconstructed light spectrum passing
+through the air gas cell is shown in Figure 6a.
+Next, we inflate the gas cell with N2O gas for gas
+spectroscopy demonstration. We collect the experimental
+interferogram IN
+d2O by a polychromatic input comprising the
+51 wavelength elements based on the linear superposition
+assumption. Measurement results of the interferograms on
+each wavelength can be found in Supporting Information Note
+7. Thus, we solve the regularized regression problem with the
+calibrated measurement matrix D′ and experimental interfero-
+gram IN
+d2O. The solution SN
+d2O representing the reconstructed
+absorption spectrum of the N2O gas cell is shown in Figure 6b.
+For comparison, we also send the laser through the N2O gas
+cell and a straight waveguide and sweep its wavelength. The
+laser intensity at each wavelength is recorded and denoted as
+G′N
+d2O, which serves as the reference absorption spectrum of
+the N2O gas cell. From the absorbance spectrum (Figure 6c), it
+can be found that the spectral features of the N2O gas can be
+well recognized. The inset in Figure 6c briefly depicts the
+modified testing system, and details can be found in
+Supporting Information Note 7.
+■DISCUSSION
+Considering the rapid progress in the development of MIR
+silicon photonics, the outstanding performance of the Si-McS
+can be expected. First, a superior spectral resolution of the Si-
+McS device can be pursued using the advanced silicon
+photonics foundry process. The extension of the waveguide
+coupler length with low-loss waveguides and the reduction of
+the waveguide coupling gap can lead to a finer spectral
+resolution based on the proposed Si-McS concept (Supporting
+Information Note 4). Leveraging on the advanced nano-
+fabrication foundry process, the narrowing coupling gap also
+contributes to the reduction of the device footprint. Second,
+the operation bandwidth of the Si-McS device can be further
+explored. The demonstrated bandwidth of 350 nm is limited
+by the available transmission bandwidth of the fiber-to-chip
+grating coupler. The further enhanced bandwidth might be
+achieved using fiber-to-chip edge couplers. Third, the adopted
+electrostatic MEMS actuation guarantees an extremely low
+energy consumption operation of the Si-McS. With the
+improvement of the 3D MEMS integration approach, the
+bonding gap between the chips can be further reduced, thus
+potentially lowering the operating bias voltage.
+The demonstrated Si-McS using MEMS-enabled silicon
+photonics exhibits promising capability of the reconfigurable
+MIR photonic devices. The MEMS approach for MIR PIC
+reconfiguration extends the usage of SOI wafer to a longer
+wavelength in a low-loss, energy-efficient, and effective way,
+Figure 6. Broadband absorption spectrum reconstruction. (a) Spectrum reconstruction for air. (b) Spectrum reconstruction for N2O gas. (c)
+Calculated absorbance showing the spectral absorption features of the detected N2O gas.
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2374
+
+
+which may enable multicomponent MIR spectroscopic sensing
+on a single chip.
+To conclude, we experimentally demonstrate an on-chip-
+integrated spectrometer using a reconfigurable MIR silicon
+photonic device. The proposed Si-McS concept is discussed,
+which is intrinsically analogous to a Michelson interferometer
+and FTIR. The experimental device consists of a pair of MEMS
+reconfigurable silicon waveguide couplers operated at MIR
+wavelengths. The CMOS-compatible fabrication process and
+single-detector scheme potentially ensure low-cost manufactur-
+ing. In our experiments, a highly accurate (1 nm accuracy)
+single-wavelength spectrum reconstruction over a large
+bandwidth (350 nm) is experimentally achieved. Moreover,
+based on a linear response assumption of the detector, we carry
+out the spectrum reconstruction for polychromatic light. The
+spectral resolution of the demonstrated Si-McS is determined
+to be 3 nm by the double wavelength reconstruction results.
+The absorption spectrum of N2O gas in the Si-McS operation
+window is investigated, and the spectral absorption feature of
+the gas is well recognized. Our study proposes a valid approach
+to achieve high-performance and compact MIR spectrometry
+on a single chip (Supporting Information Note 8). Considering
+the effectiveness of the MEMS reconfiguration mechanism, this
+concept can be applied to other wavelength bands and can also
+be extended to other photonics platforms besides silicon. The
+Si-McS can be an important building block for spectroscopy-
+on-a-chip applications, contributing to the miniaturized,
+robust, and low-cost portable spectroscopic sensors.
+■METHODS
+Device Fabrication. The proposed MIR Si-McS is
+fabricated using an industry-compatible process. It consists of
+two chips. The glass chip (0.8 × 0.8 cm2) is chosen for the top
+electrodes because of its insulation property. The bottom chip
+is a 1.5 × 1.5 cm2 SOI chip. First, metal patterns, including the
+electrodes, bonding pads, and markers, are fabricated on the
+glass chip using standard optical lithography (LaserWriter,
+LW405b; photoresist: AZ1512) followed by metal deposition
+of 5 nm-thick Ti and 50 nm-thick Au (AJA Ebeam Evaporator)
+and the liftoff process (rinsing samples in 65 °C acetone).
+Second, we work on the fabrication of the bottom chip.
+Photonic devices, MEMS structures, and markers are
+fabricated on an SOI chip, using standard electron-beam
+lithography (JOEL, JBX-6300FS; E-beam resist: ZEP 520A)
+followed by deep reactive-ion etching (DRIE, Oxford
+Plasmalab 100 ICP) and e-beam resist removal. Next, metal
+patterns, including electrodes and bonding pads, are fabricated
+on the bottom SOI chip using standard optical lithography
+(LaserWriter, LW405b; photoresist: AZ1512) followed by
+metal deposition of 5 nm-thick Cr and 50 nm-thick Au (Lesker
+NANO 36 thermal evaporator) and the liftoff process (rinsing
+samples in 65 °C acetone). Then, we use the diluted hydrogen
+fluoride (DHF) for the release of MEMS structures. The 49%
+HF liquid is diluted with DI water in the ratio of 1−4. After 1.5
+h of DHF release, the SOI chip is rinsed with acetone for 0.5 h
+and then dried using a critical point dryer (Leica EM
+CPD300). Next, we use the wire bonder (F&K Delvotec
+5330) to place the aluminum solders on the bonding pads on
+both chips. Finally, these two chips are aligned and bonded
+together using the flip-chip bonder (FINEPLACER sigma) by
+thermal compression.
+Experimental Setup. We use a quantum cascaded laser
+(Daylight, MIRcat-1200) covering the wavelength range from
+3650 nm to 4150 nm. An optical chopper (Stanford Research
+SR540) is placed at the laser output. A half-wave plate
+(Thorlabs WPLQ05M-4000) is placed right after the chopper
+to control the polarization. The light is focused on a ZrF4 fiber
+end using a ZnSe lens to couple the MIR light from the tunable
+laser into the MIR fiber. The light is then coupled in and out of
+the PIC chip through two on-chip grating couplers. Both fiber
+ends are mounted on mechanical precision positioners with a
+10° tilting from the vertical direction. An optical microscope is
+used to facilitate the fiber-to-chip alignment. Optical signals
+from the chip are detected with an MIR photodetector
+(Thorlabs PDA20H). The photodetector is connected to a
+lock-in amplifier (Stanford Research SR830) as the input
+signal. Meanwhile, the optical chopper is also connected to the
+lock-in amplifier as the reference signal to reduce the
+measurement noise. The Si-McS chip is electrically connected
+to a customized PCB via wire bonding. We use a semi-
+conductor characterization system (Keithley 4200-SCS) for
+bias voltage supply to implement the time-domain modulation
+of OPD.
+■ASSOCIATED CONTENT
+*
+sı Supporting Information
+The Supporting Information is available free of charge at
+https://pubs.acs.org/doi/10.1021/acsphotonics.2c00381.
+Waveguide design parameters and loss study; simulation
+details; experimental voltage calibration for the electro-
+static actuation; estimation of the theoretical perform-
+ance; validation of the linear superposition assumption;
+spectrum reconstruction robustness to measurement
+noise; testing setup and measured results for gas
+absorption spectroscopy; and comparison tables (PDF)
+■AUTHOR INFORMATION
+Corresponding Authors
+Chengkuo Lee −Department of Electrical and Computer
+Engineering, National University of Singapore, Singapore
+117583, Singapore; Center for Intelligent Sensors and MEMS
+(CISM), National University of Singapore, Singapore
+117608, Singapore;
+orcid.org/0000-0002-8886-3649;
+Email: elelc@nus.edu.sg
+Guangya Zhou −Department of Mechanical Engineering,
+National University of Singapore, Singapore 117575,
+Singapore; Center for Intelligent Sensors and MEMS
+(CISM), National University of Singapore, Singapore
+117608, Singapore;
+orcid.org/0000-0003-2651-2656;
+Email: mpezgy@nus.edu.sg
+Authors
+Qifeng Qiao −Department of Mechanical Engineering,
+National University of Singapore, Singapore 117575,
+Singapore; Center for Intelligent Sensors and MEMS
+(CISM), National University of Singapore, Singapore
+117608, Singapore
+Xinmiao Liu −Department of Mechanical Engineering,
+National University of Singapore, Singapore 117575,
+Singapore; Department of Electrical and Computer
+Engineering, National University of Singapore, Singapore
+117583, Singapore; Center for Intelligent Sensors and MEMS
+(CISM), National University of Singapore, Singapore
+117608, Singapore
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2375
+
+
+Zhihao Ren −Department of Electrical and Computer
+Engineering, National University of Singapore, Singapore
+117583, Singapore; Center for Intelligent Sensors and MEMS
+(CISM), National University of Singapore, Singapore
+117608, Singapore
+Bowei Dong −Department of Electrical and Computer
+Engineering, National University of Singapore, Singapore
+117583, Singapore; Center for Intelligent Sensors and MEMS
+(CISM), National University of Singapore, Singapore
+117608, Singapore
+Ji Xia −Department of Mechanical Engineering, National
+University of Singapore, Singapore 117575, Singapore
+Haoyang Sun −Department of Mechanical Engineering,
+National University of Singapore, Singapore 117575,
+Singapore
+Complete contact information is available at:
+https://pubs.acs.org/10.1021/acsphotonics.2c00381
+Funding
+We acknowledge Singapore Ministry of Education (MOE2019-
+T2-2-104) for financial support.
+Notes
+The authors declare no competing financial interest.
+■REFERENCES
+(1) Manley, M. Near-infrared spectroscopy and hyperspectral
+imaging: non-destructive analysis of biological materials. Chem. Soc.
+Rev. 2014, 43, 8200−8214.
+(2) Yang, Z.; Albrow-Owen, T.; Cai, W.; Hasan, T. Miniaturization
+of optical spectrometers. Science 2021, 371, No. eabe0722.
+(3) Wolffenbuttel, R. F. MEMS-based optical mini-and micro-
+spectrometers for the visible and infrared spectral range. J. Micromech.
+Microeng. 2005, 15, S145.
+(4) Schuler, L. P.; Milne, J. S.; Dell, J. M.; Faraone, L. MEMS-based
+microspectrometer technologies for NIR and MIR wavelengths. J.
+Phys. D: Appl. Phys. 2009, 42, 133001.
+(5) Malinen, J.; Rissanen, A.; Saari, H.; Karioja, P.; Karppinen, M.;
+Aalto, T.; Tukkiniemi, K. Advances in Miniature Spectrometer and
+Sensor Development; Next-Generation Spectroscopic Technologies
+VII, International Society for Optics and Photonics, 2014; p 91010C.
+(6) Cadusch, J. J.; Meng, J.; Craig, B. J.; Shrestha, V. R.; Crozier, K.
+B. Visible to long-wave infrared chip-scale spectrometers based on
+photodetectors with tailored responsivities and multispectral filters.
+Nanophotonics 2020, 9, 3197−3208.
+(7) Meng, J.; Cadusch, J. J.; Crozier, K. B. Detector-only
+spectrometer based on structurally colored silicon nanowires and a
+reconstruction algorithm. Nano Lett. 2019, 20, 320−328.
+(8) Ryckeboer, E.; Nie, X.; Dhakal, A.; Martens, D.; Bienstman, P.;
+Roelkens, G.; Baets, R. Spectroscopic sensing and applications in
+Silicon Photonics. 2017 IEEE 14th International Conference on Group
+IV Photonics (GFP); Ieee, 2017; pp 81−82.
+(9) Stojanović, V.; Ram, R. J.; Popović, M.; Lin, S.; Moazeni, S.;
+Wade, M.; Sun, C.; Alloatti, L.; Atabaki, A.; Pavanello, F.; Mehta, N.;
+Bhargava, P. Monolithic silicon-photonic platforms in state-of-the-art
+CMOS SOI processes. Opt Express 2018, 26, 13106−13121.
+(10) He, J.-J.; Lamontagne, B.; Delage, A.; Erickson, L.; Davies, M.;
+Koteles, E. S. Monolithic integrated wavelength demultiplexer based
+on a waveguide Rowland circle grating in InGaAsP/lnP. J. Lightwave
+Technol. 1998, 16, 631−638.
+(11) Sander, D.; Müller, J. Selffocussing phase transmission grating
+for an integrated optical microspectrometer. Sens. Actuators, A 2001,
+88, 1−9.
+(12) Cheben, P.; Schmid, J. H.; Delâge, A.; Densmore, A.; Janz, S.;
+Lamontagne, B.; Lapointe, J.; Post, E.; Waldron, P.; Xu, D.-X. A high-
+resolution silicon-on-insulator arrayed waveguide grating micro-
+spectrometer with sub-micrometer aperture waveguides. Opt Express
+2007, 15, 2299−2306.
+(13) Calafiore, G.; Koshelev, A.; Dhuey, S.; Goltsov, A.; Sasorov, P.;
+Babin, S.; Yankov, V.; Cabrini, S.; Peroz, C. Holographic planar
+lightwave circuit for on-chip spectroscopy. Light Sci. Appl. 2014, 3,
+No. e203.
+(14) Gao, B.; Shi, Z.; Boyd, R. W. Design of flat-band superprism
+structures for on-chip spectroscopy. Opt. Express 2015, 23, 6491−
+6496.
+(15) Nitkowski, A.; Chen, L.; Lipson, M. Cavity-enhanced on-chip
+absorption spectroscopy using microring resonators. Opt Express
+2008, 16, 11930−11936.
+(16) Zheng, S.; Cai, H.; Song, J.; Zou, J.; Liu, P. Y.; Lin, Z.; Kwong,
+D.-L.; Liu, A.-Q. A Single-Chip Integrated Spectrometer via Tunable
+Microring Resonator Array. IEEE Photonics J. 2019, 11, 1−9.
+(17) Kita, D. M.; Miranda, B.; Favela, D.; Bono, D.; Michon, J.; Lin,
+H.; Gu, T.; Hu, J. High-performance and scalable on-chip digital
+Fourier transform spectroscopy. Nat. Commun. 2018, 9, 4405.
+(18) Li, L.; Peng, C.; Qi, Y.; Zhou, G.; Qiao, Q.; Chau, F. S.; Zhou,
+G. Design of an on-chip Fourier transform spectrometer using
+waveguide directional couplers and NEMS. Opt. Express 2018, 26,
+30362−30370.
+(19) Souza, M. C. M. M.; Grieco, A.; Frateschi, N. C.; Fainman, Y.
+Fourier transform spectrometer on silicon with thermo-optic non-
+linearity and dispersion correction. Nat. Commun. 2018, 9, 665.
+(20) Pohl, D.; Reig Escalé, M.; Madi, M.; Kaufmann, F.; Brotzer, P.;
+Sergeyev, A.; Guldimann, B.; Giaccari, P.; Alberti, E.; Meier, U.;
+Grange, R. An integrated broadband spectrometer on thin-film
+lithium niobate. Nat. Photonics 2019, 14, 24−29.
+(21) Zheng, S. N.; Zou, J.; Cai, H.; Song, J. F.; Chin, L. K.; Liu, P.
+Y.; Lin, Z. P.; Kwong, D. L.; Liu, A. Q. Microring resonator-assisted
+Fourier transform spectrometer with enhanced resolution and large
+bandwidth in single chip solution. Nat. Commun. 2019, 10, 2349.
+(22) Redding, B.; Liew, S. F.; Bromberg, Y.; Sarma, R.; Cao, H.
+Evanescently coupled multimode spiral spectrometer. Optica 2016, 3,
+956−962.
+(23) Redding, B.; Liew, S. F.; Sarma, R.; Cao, H. Compact
+spectrometer based on a disordered photonic chip. Nat. Photonics
+2013, 7, 746−751.
+(24) Nedeljkovic, M.; Velasco, A. V.; Khokhar, A. Z.; Delâge, A.;
+Cheben, P.; Mashanovich, G. Z. Mid-infrared silicon-on-insulator
+Fourier-transform spectrometer chip. IEEE Photon. Technol. Lett.
+2015, 28, 528−531.
+(25) Liu, Q.; Ramirez, J. M.; Vakarin, V.; Le Roux, X.; Alonso-
+Ramos, C.; Frigerio, J.; Ballabio, A.; Talamas Simola, E.; Bouville, D.;
+Vivien, L.; Isella, G.; Marris-Morini, D. Integrated broadband dual-
+polarization Ge-rich SiGe mid-infrared Fourier-transform spectrom-
+eter. Opt. Lett. 2018, 43, 5021−5024.
+(26) Heidari, E.; Xu, X.; Chung, C.-J.; Chen, R. T. On-chip Fourier
+transform spectrometer on silicon-on-sapphire. Opt. Lett. 2019, 44,
+2883.
+(27) Montesinos-Ballester, M.; Liu, Q.; Vakarin, V.; Ramirez, J. M.;
+Alonso-Ramos, C.; Roux, X. L.; Frigerio, J.; Ballabio, A.; Talamas, E.;
+Vivien, L.; Isella, G.; Marris-Morini, D. On-chip Fourier-transform
+spectrometer based on spatial heterodyning tuned by thermo-optic
+effect. Sci. Rep. 2019, 9, 14633.
+(28) Erfan, M.; Sabry, Y. M.; Sakr, M.; Mortada, B.; Medhat, M.;
+Khalil, D. On-chip micro−electro−mechanical system Fourier
+transform infrared (MEMS FT-IR) spectrometer-based gas sensing.
+Appl. Spectrosc. 2016, 70, 897−904.
+(29) Hu, T.; Dong, B.; Luo, X.; Liow, T.-Y.; Song, J.; Lee, C.; Lo, G.-
+Q. Silicon photonic platforms for mid-infrared applications [Invited].
+Photon. Res. 2017, 5, 417.
+(30) Lin, H.; Luo, Z.; Gu, T.; Kimerling, L. C.; Wada, K.; Agarwal,
+A.; Hu, J. Mid-infrared integrated photonics on silicon: a perspective.
+Nanophotonics 2017, 7, 393−420.
+(31) Soref, R. Mid-infrared photonics in silicon and germanium. Nat.
+Photonics 2010, 4, 495−497.
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2376
+
+
+(32) Gu, T.; Hu, J. Reconfigurable Mid-infrared Photonics. 2021
+IEEE Photonics Society Summer Topicals Meeting Series (SUM); IEEE,
+2021; pp 1−2.
+(33) Qiao, Q.; Yazici, M. S.; Dong, B.; Liu, X.; Lee, C.; Zhou, G.
+Multifunctional mid-infrared photonic switch using a MEMS-based
+tunable waveguide coupler. Opt. Lett. 2020, 45, 5620−5623.
+(34) Nedeljkovic, M.; Soref, R.; Mashanovich, G. Z. Free-Carrier
+Electrorefraction and Electroabsorption Modulation Predictions for
+Silicon Over the 1−14-$\mu\hbox {m} $ Infrared Wavelength Range.
+IEEE Photonics J. 2011, 3, 1171−1180.
+(35) Nedeljkovic, M.; Stankovic, S.; Mitchell, C. J.; Khokhar, A. Z.;
+Reynolds, S. A.; Thomson, D. J.; Gardes, F. Y.; Littlejohns, C. G.;
+Reed, G. T.; Mashanovich, G. Z. Mid-infrared thermo-optic
+modulators in SoI. IEEE Photon. Technol. Lett. 2014, 26, 1352−1355.
+(36) Quack, N.; Sattari, H.; Takabayashi, A. Y.; Zhang, Y.; Verheyen,
+P.; Bogaerts, W.; Edinger, P.; Errando-Herranz, C.; Gylfason, K. B.
+MEMS-enabled silicon photonic integrated devices and circuits. IEEE
+J. Quantum Electron. 2020, 56, 1−10.
+(37) Yazici, M. S.; Dong, B.; Hasan, D.; Sun, F.; Lee, C. Integration
+of MEMS IR detectors with MIR waveguides for sensing applications.
+Opt Express 2020, 28, 11524−11537.
+(38) Syms, R. R. A.; Cozens, J. R. Optical Guided Waves and Devices;
+McGraw-Hill, 1992.
+(39) Han, S.; Seok, T. J.; Quack, N.; Yoo, B.-W.; Wu, M. C. Large-
+scale silicon photonic switches with movable directional couplers.
+Optica 2015, 2, 370−375.
+(40) Pedregosa, F.; Varoquaux, G.; Gramfort, A.; Michel, V.;
+Thirion, B.; Grisel, O.; Blondel, M.; Prettenhofer, P.; Weiss, R.;
+Dubourg, V. Scikit-learn: Machine learning in Python. J. Mach. Learn.
+Res. 2011, 12, 2825−2830.
+(41) Valiunas, J. K.; Stewart, G.; Das, G. Detection of Nitrous Oxide
+(N 2 O) at Sub-ppmv using intracavity absorption spectroscopy. IEEE
+Photon. Technol. Lett. 2016, 28, 359−362.
+ACS Photonics
+pubs.acs.org/journal/apchd5
+Article
+https://doi.org/10.1021/acsphotonics.2c00381
+ACS Photonics 2022, 9, 2367−2377
+2377
