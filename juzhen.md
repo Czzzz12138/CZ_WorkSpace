@@ -22,3 +22,17 @@ $$
 
 
 
+$$\begin{bmatrix}
+{a_{11}}&{a_{12}}&{\cdots}&{a_{1-16}}\\
+{a_{21}}&{a_{22}}&{\cdots}&{a_{2-16}}\\
+{\vdots}&{\vdots}&{\ddots}&{\vdots}\\
+{a_{16-1}}&{a_{16-2}}&{\cdots}&{a_{16-16}}\\
+\end{bmatrix}$$
+
+
+$$\begin{bmatrix}
+{x_{1}}\\
+{x_{2}}\\
+{\vdots}\\
+{x_{16}}\\
+\end{bmatrix}$$

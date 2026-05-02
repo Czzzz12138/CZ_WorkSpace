@@ -1,0 +1,62 @@
+This directory contains the a selection of the Cora dataset (www.research.whizbang.com/data).
+
+The Cora dataset consists of Machine Learning papers. These papers are classified into one of the following seven classes:
+		Case_Based
+		Genetic_Algorithms
+		Neural_Networks
+		Probabilistic_Methods
+		Reinforcement_Learning
+		Rule_Learning
+		Theory
+
+The papers were selected in a way such that in the final corpus every paper cites or is cited by atleast one other paper. There are 2708 papers in the whole corpus. 
+
+After stemming and removing stopwords we were left with a vocabulary of size 1433 unique words. All words with document frequency less than 10 were removed.
+
+
+THE DIRECTORY CONTAINS TWO FILES:
+
+The .content file contains descriptions of the papers in the following format:
+
+		<paper_id> <word_attributes>+ <class_label>
+
+The first entry in each line contains the unique string ID of the paper followed by binary values indicating whether each word in the vocabulary is present (indicated by 1) or absent (indicated by 0) in the paper. Finally, the last entry in the line contains the class label of the paper.
+
+The .cites file contains the citation graph of the corpus. Each line describes a link in the following format:
+
+		<ID of cited paper> <ID of citing paper>
+
+Each line contains two paper IDs. The first entry is the ID of the paper being cited and the second ID stands for the paper which contains the citation. The direction of the link is from right to left. If a line is represented by "paper1 paper2" then the link is "paper2->paper1". 
+
+
+### 中文翻译版本
+
+此目录包含 Cora 数据集的精选子集（www.research.whizbang.com/data）。
+
+Cora 数据集由机器学习论文组成。这些论文被分为以下七个类别之一：
+		Case_Based（基于案例）
+		Genetic_Algorithms（遗传算法）
+		Neural_Networks（神经网络）
+		Probabilistic_Methods（概率方法）
+		Reinforcement_Learning（强化学习）
+		Rule_Learning（规则学习）
+		Theory（理论）
+
+这些论文的选择方式使得在最终的语料库中，每篇论文都至少引用了另一篇论文，或被另一篇论文所引用。整个语料库中共有 2708 篇论文。
+
+在提取词干和去除停用词后，保留了一个包含 1433 个唯一单词的词汇表。所有文档频率小于 10 的单词都已被去除。
+
+
+该目录包含两个文件：
+
+`.content` 文件包含以下格式的论文描述：
+
+		<论文_ID> <单词属性>+ <类别标签>
+
+每行的第一项包含论文的唯一字符串 ID，后跟一组二进制值，指示词汇表中的每个单词在该论文中是出现（用 1 表示）还是未出现（用 0 表示）。最后，该行的最后一项包含该论文的类别标签。
+
+`.cites` 文件包含语料库的引用关系图。每一行描述一个具有以下格式的链接：
+
+		<被引论文的ID> <引用论文的ID>
+
+每一行包含两个论文 ID。第一项是被引用论文的 ID，第二项是包含该引用的论文的 ID。链接的方向是从右到左。如果一行表示为 "paper1 paper2"，那么链接的关系就是 "paper2->paper1"。
